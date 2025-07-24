@@ -5,6 +5,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://bpland556.github.io'),
   title: 'The Adventures of Billy and Bobby - European Travel Map',
   description: 'Follow Billy and Bobby\'s incredible journey across Europe through an interactive map filled with stories, photos, and memories.',
   keywords: 'travel, Europe, interactive map, Billy and Bobby, adventure, storytelling',
