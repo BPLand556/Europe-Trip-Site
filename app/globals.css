@@ -1,78 +1,126 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
-@layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #1a365d 0%, #0c4a6e 100%);
-    min-height: 100vh;
-  }
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap');
+
+/* Leaflet map styles */
+.leaflet-container {
+  height: 100vh;
+  width: 100%;
+  z-index: 1;
 }
 
-@layer components {
-  .glass-morphism {
-    @apply bg-white/10 backdrop-blur-md border border-white/20;
-  }
-  
-  .glass-morphism-strong {
-    @apply bg-white/20 backdrop-blur-lg border border-white/30;
-  }
-  
-  .text-gradient {
-    @apply bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent;
-  }
-  
-  .mapboxgl-popup-content {
-    @apply rounded-xl shadow-2xl border-0 !important;
-  }
-  
-  .mapboxgl-popup-tip {
-    @apply border-t-white/20 !important;
-  }
-  
-  .custom-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 3px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.5);
-  }
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-@layer utilities {
-  .animation-delay-200 {
-    animation-delay: 200ms;
+.leaflet-popup-tip {
+  background: white;
+}
+
+/* Custom marker animations */
+.leaflet-marker-icon {
+  transition: all 0.3s ease;
+}
+
+.leaflet-marker-icon:hover {
+  transform: scale(1.1);
+  z-index: 1000;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Backdrop blur support */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Custom button hover effects */
+.btn-hover {
+  transition: all 0.3s ease;
+}
+
+.btn-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Map overlay styles */
+.map-overlay {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+  pointer-events: none;
+}
+
+/* Text shadow for better readability */
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Custom focus styles */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+/* Responsive text sizing */
+@media (max-width: 768px) {
+  .responsive-text-lg {
+    font-size: 1rem;
   }
   
-  .animation-delay-400 {
-    animation-delay: 400ms;
+  .responsive-text-xl {
+    font-size: 1.125rem;
   }
   
-  .animation-delay-600 {
-    animation-delay: 600ms;
+  .responsive-text-2xl {
+    font-size: 1.5rem;
   }
   
-  .animation-delay-800 {
-    animation-delay: 800ms;
+  .responsive-text-4xl {
+    font-size: 2rem;
+  }
+  
+  .responsive-text-6xl {
+    font-size: 2.5rem;
   }
 } 
