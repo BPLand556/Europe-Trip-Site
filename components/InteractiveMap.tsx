@@ -24,9 +24,9 @@ export default function InteractiveMap({ locations, onLocationClick, journeyPhas
       const mapboxgl = await import('mapbox-gl');
       
       // Set your Mapbox access token here
-      mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || 'pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJjbGV4YW1wbGUifQ.example';
+      (mapboxgl as any).accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || 'pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJjbGV4YW1wbGUifQ.example';
 
-      map.current = new mapboxgl.Map({
+      map.current = new (mapboxgl as any).Map({
         container: mapContainer.current!,
         style: 'mapbox://styles/mapbox/light-v11',
         center: [4.9041, 50.0755], // Amsterdam
