@@ -29,29 +29,56 @@ export default function InteractiveMap({ locations, onLocationClick, journeyPhas
       {/* Map Container */}
       <div 
         ref={mapContainer} 
-        className="w-full h-full bg-gradient-to-br from-blue-50 to-blue-100 relative"
+        className="w-full h-full relative"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='mapGrid' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 40 0 L 0 0 0 40' fill='none' stroke='%23e5e7eb' stroke-width='1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='%23f8fafc'/%3E%3Crect width='100%25' height='100%25' fill='url(%23mapGrid)'/%3E%3C/svg%3E")`,
+          backgroundSize: 'cover',
+        }}
       >
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }} />
+        {/* Europe Map Overlay */}
+        <div className="absolute inset-0 opacity-20">
+          <svg viewBox="0 0 1000 600" className="w-full h-full">
+            {/* Simplified Europe outline */}
+            <path 
+              d="M 100 200 Q 150 180 200 200 Q 250 220 300 200 Q 350 180 400 200 Q 450 220 500 200 Q 550 180 600 200 Q 650 220 700 200 Q 750 180 800 200 L 800 400 Q 750 420 700 400 Q 650 380 600 400 Q 550 420 500 400 Q 450 380 400 400 Q 350 420 300 400 Q 250 380 200 400 Q 150 420 100 400 Z" 
+              fill="#e5e7eb" 
+              stroke="#d1d5db" 
+              strokeWidth="2"
+            />
+            {/* Country outlines */}
+            <path d="M 150 250 Q 200 230 250 250 Q 300 270 350 250" stroke="#d1d5db" strokeWidth="1" fill="none" opacity="0.5"/>
+            <path d="M 400 280 Q 450 260 500 280 Q 550 300 600 280" stroke="#d1d5db" strokeWidth="1" fill="none" opacity="0.5"/>
+            <path d="M 650 320 Q 700 300 750 320 Q 800 340 850 320" stroke="#d1d5db" strokeWidth="1" fill="none" opacity="0.5"/>
+          </svg>
         </div>
 
         {/* Location Markers */}
-        {locations.map((location, index) => (
-          <motion.div
-            key={location.id}
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.1 }}
-            className="absolute cursor-pointer"
-            style={{
-              left: `${20 + (index * 15)}%`,
-              top: `${30 + (index * 10)}%`,
-            }}
-            onClick={() => onLocationClick(location)}
-          >
+        {locations.map((location, index) => {
+          // Geographic positioning based on actual coordinates
+          const positions = {
+            'paris-france': { left: '25%', top: '35%' },
+            'rome-italy': { left: '35%', top: '45%' },
+            'barcelona-spain': { left: '20%', top: '50%' },
+            'amsterdam-netherlands': { left: '30%', top: '25%' },
+            'prague-czech-republic': { left: '45%', top: '30%' }
+          };
+          
+          const position = positions[location.id as keyof typeof positions] || { left: '50%', top: '50%' };
+          
+          return (
+            <motion.div
+              key={location.id}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+              className="absolute cursor-pointer"
+              style={{
+                left: position.left,
+                top: position.top,
+                transform: 'translate(-50%, -50%)'
+              }}
+              onClick={() => onLocationClick(location)}
+            >
             <div className="relative">
               <div className={`
                 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg
@@ -73,7 +100,8 @@ export default function InteractiveMap({ locations, onLocationClick, journeyPhas
               </div>
             </div>
           </motion.div>
-        ))}
+        );
+        })}
 
         {/* Route Lines */}
         {locations.filter(loc => loc.visited).length > 1 && (
@@ -84,23 +112,17 @@ export default function InteractiveMap({ locations, onLocationClick, journeyPhas
                 <stop offset="100%" stopColor="#d69e2e" stopOpacity="0.3" />
               </linearGradient>
             </defs>
-            {locations.filter(loc => loc.visited).map((location, index, visitedLocations) => {
-              if (index === visitedLocations.length - 1) return null;
-              const nextLocation = visitedLocations[index + 1];
-              return (
-                <line
-                  key={`route-${index}`}
-                  x1={`${20 + (index * 15)}%`}
-                  y1={`${30 + (index * 10)}%`}
-                  x2={`${20 + ((index + 1) * 15)}%`}
-                  y2={`${30 + ((index + 1) * 10)}%`}
-                  stroke="url(#routeGradient)"
-                  strokeWidth="3"
-                  strokeDasharray="5,5"
-                  className="animate-pulse"
-                />
-              );
-            })}
+            {/* Route from Paris to Rome */}
+            <line
+              x1="25%"
+              y1="35%"
+              x2="35%"
+              y2="45%"
+              stroke="url(#routeGradient)"
+              strokeWidth="3"
+              strokeDasharray="5,5"
+              className="animate-pulse"
+            />
           </svg>
         )}
       </div>
