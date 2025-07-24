@@ -13,187 +13,97 @@ interface InteractiveMapProps {
 
 export default function InteractiveMap({ locations, onLocationClick, journeyPhases }: InteractiveMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<any>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
 
   useEffect(() => {
     if (!mapContainer.current) return;
 
-    // Initialize map
-    const initMap = async () => {
-      const mapboxgl = await import('mapbox-gl');
-      
-      // Set your Mapbox access token here
-      (mapboxgl as any).accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || 'pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJjbGV4YW1wbGUifQ.example';
-
-      map.current = new (mapboxgl as any).Map({
-        container: mapContainer.current!,
-        style: 'mapbox://styles/mapbox/light-v11',
-        center: [4.9041, 50.0755], // Amsterdam
-        zoom: 5,
-        bearing: 0,
-        pitch: 0
-      });
-
-      map.current.on('load', () => {
-        setMapLoaded(true);
-        addMarkers();
-        addRoutes();
-      });
-
-      // Add navigation controls
-      map.current.addControl(new (mapboxgl as any).NavigationControl(), 'top-right');
-    };
-
-    initMap();
-
-    return () => {
-      if (map.current) {
-        map.current.remove();
-      }
-    };
+    // Simulate map loading
+    setTimeout(() => {
+      setMapLoaded(true);
+    }, 1000);
   }, []);
-
-  const addMarkers = () => {
-    if (!map.current) return;
-
-    locations.forEach((location) => {
-      // Create custom marker element
-      const markerEl = document.createElement('div');
-      markerEl.className = 'custom-marker';
-      
-      const markerContent = document.createElement('div');
-      markerContent.className = 'relative';
-      
-      // Determine marker type and styling
-      let markerClass = 'w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg';
-      let icon = null;
-      
-      if (location.current) {
-        markerClass += ' bg-blue-500 animate-pulse-slow';
-        icon = <div className="w-3 h-3 bg-white rounded-full animate-ping" />;
-      } else if (location.visited) {
-        markerClass += ' bg-gold-500';
-        icon = <CheckCircle className="w-4 h-4" />;
-      } else if (location.planned) {
-        markerClass += ' bg-gray-400';
-        icon = <Clock className="w-4 h-4" />;
-      } else {
-        markerClass += ' bg-primary-600';
-        icon = <MapPin className="w-4 h-4" />;
-      }
-
-      markerContent.innerHTML = `
-        <div class="${markerClass}">
-          ${icon ? `<div class="text-white">${icon}</div>` : ''}
-        </div>
-        <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rounded-full shadow-sm"></div>
-      `;
-      
-      markerEl.appendChild(markerContent);
-
-      // Add hover effect
-      markerEl.addEventListener('mouseenter', () => {
-        markerEl.style.transform = 'scale(1.2)';
-        showPopup(location);
-      });
-
-      markerEl.addEventListener('mouseleave', () => {
-        markerEl.style.transform = 'scale(1)';
-        hidePopup();
-      });
-
-      markerEl.addEventListener('click', () => {
-        onLocationClick(location);
-      });
-
-      // Add marker to map
-      new (mapboxgl as any).Marker(markerEl)
-        .setLngLat(location.coordinates)
-        .addTo(map.current);
-    });
-  };
-
-  const addRoutes = () => {
-    if (!map.current) return;
-
-    // Add route lines between visited locations
-    const visitedLocations = locations.filter(loc => loc.visited);
-    
-    if (visitedLocations.length > 1) {
-      const coordinates = visitedLocations.map(loc => loc.coordinates);
-      
-      map.current.addSource('route', {
-        type: 'geojson',
-        data: {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'LineString',
-            coordinates: coordinates
-          }
-        }
-      });
-
-      map.current.addLayer({
-        id: 'route',
-        type: 'line',
-        source: 'route',
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        paint: {
-          'line-color': '#d69e2e',
-          'line-width': 3,
-          'line-opacity': 0.8
-        }
-      });
-    }
-  };
-
-  const showPopup = (location: Location) => {
-    if (!map.current) return;
-
-          const popup = new (mapboxgl as any).Popup({
-        closeButton: false,
-        closeOnClick: false,
-        className: 'custom-popup'
-      });
-
-    popup.setHTML(`
-      <div class="p-4">
-        <h3 class="font-bold text-lg text-gray-900 mb-1">${location.name}</h3>
-        <p class="text-gray-600 text-sm mb-2">${location.country}</p>
-        <div class="flex items-center space-x-2">
-          <div class="flex items-center">
-            ${Array.from({ length: 5 }, (_, i) => 
-              `<Star className="w-4 h-4 ${i < Math.floor(location.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}" />`
-            ).join('')}
-          </div>
-          <span class="text-sm text-gray-500">${location.rating}</span>
-        </div>
-        <p class="text-sm text-gray-600 mt-2">${location.description}</p>
-      </div>
-    `);
-
-    popup.setLngLat(location.coordinates).addTo(map.current);
-  };
-
-  const hidePopup = () => {
-    if (!map.current) return;
-    
-    const popups = document.querySelectorAll('.mapboxgl-popup');
-    popups.forEach(popup => popup.remove());
-  };
 
   return (
     <div className="relative w-full h-full">
       {/* Map Container */}
       <div 
         ref={mapContainer} 
-        className="w-full h-full"
-      />
+        className="w-full h-full bg-gradient-to-br from-blue-50 to-blue-100 relative"
+      >
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }} />
+        </div>
+
+        {/* Location Markers */}
+        {locations.map((location, index) => (
+          <motion.div
+            key={location.id}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.1 }}
+            className="absolute cursor-pointer"
+            style={{
+              left: `${20 + (index * 15)}%`,
+              top: `${30 + (index * 10)}%`,
+            }}
+            onClick={() => onLocationClick(location)}
+          >
+            <div className="relative">
+              <div className={`
+                w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg
+                ${location.current ? 'bg-blue-500 animate-pulse-slow' : ''}
+                ${location.visited ? 'bg-gold-500' : ''}
+                ${location.planned ? 'bg-gray-400' : ''}
+                ${!location.current && !location.visited && !location.planned ? 'bg-primary-600' : ''}
+              `}>
+                {location.current && <div className="w-3 h-3 bg-white rounded-full animate-ping" />}
+                {location.visited && <CheckCircle className="w-4 h-4" />}
+                {location.planned && <Clock className="w-4 h-4" />}
+                {!location.current && !location.visited && !location.planned && <MapPin className="w-4 h-4" />}
+              </div>
+              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white rounded-full shadow-sm"></div>
+              
+              {/* Location Label */}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1 text-xs font-medium text-gray-700 whitespace-nowrap shadow-lg">
+                {location.name}
+              </div>
+            </div>
+          </motion.div>
+        ))}
+
+        {/* Route Lines */}
+        {locations.filter(loc => loc.visited).length > 1 && (
+          <svg className="absolute inset-0 w-full h-full pointer-events-none">
+            <defs>
+              <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#d69e2e" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="#d69e2e" stopOpacity="0.3" />
+              </linearGradient>
+            </defs>
+            {locations.filter(loc => loc.visited).map((location, index, visitedLocations) => {
+              if (index === visitedLocations.length - 1) return null;
+              const nextLocation = visitedLocations[index + 1];
+              return (
+                <line
+                  key={`route-${index}`}
+                  x1={`${20 + (index * 15)}%`}
+                  y1={`${30 + (index * 10)}%`}
+                  x2={`${20 + ((index + 1) * 15)}%`}
+                  y2={`${30 + ((index + 1) * 10)}%`}
+                  stroke="url(#routeGradient)"
+                  strokeWidth="3"
+                  strokeDasharray="5,5"
+                  className="animate-pulse"
+                />
+              );
+            })}
+          </svg>
+        )}
+      </div>
 
       {/* Loading Overlay */}
       <AnimatePresence>
