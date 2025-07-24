@@ -28,8 +28,12 @@ export const metadata: Metadata = {
     description: 'Follow Billy and Bobby\'s incredible journey across Europe through an interactive map filled with stories, photos, and memories.',
     images: ['/og-image.jpg'],
   },
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({
