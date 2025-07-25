@@ -21,33 +21,46 @@ const europeBounds: LatLngBounds = new LatLngBounds(
   [71.0, 45.0]   // Northeast coordinates
 )
 
-// Custom zoom controls component
-const CustomZoomControls = () => {
+// Working zoom controls component using useMap
+const ZoomControls = () => {
   const map = useMap()
-
-  const zoomIn = () => {
-    map.zoomIn()
+  
+  const handleZoom = (direction: 'in' | 'out') => {
+    console.log('Zoom button clicked:', direction)
+    console.log('Map instance:', map)
+    
+    if (!map) {
+      console.error('Map instance not found!')
+      return
+    }
+    
+    const currentZoom = map.getZoom()
+    console.log('Current zoom:', currentZoom)
+    
+    if (direction === 'in') {
+      map.zoomIn()
+    } else {
+      map.zoomOut()
+    }
   }
-
-  const zoomOut = () => {
-    map.zoomOut()
-  }
-
+  
   return (
-    <div className="absolute bottom-6 right-6 z-[1000] flex flex-col space-y-2">
+    <div className="zoom-controls">
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        onClick={zoomIn}
-        className="w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        onClick={() => handleZoom('in')}
+        className="zoom-btn zoom-in"
+        type="button"
       >
         <Plus className="w-5 h-5 text-gray-700" />
       </motion.button>
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        onClick={zoomOut}
-        className="w-12 h-12 bg-white rounded-lg shadow-lg flex items-center justify-center hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        onClick={() => handleZoom('out')}
+        className="zoom-btn zoom-out"
+        type="button"
       >
         <Minus className="w-5 h-5 text-gray-700" />
       </motion.button>
@@ -425,8 +438,8 @@ export default function BillyBobbyTravelMap() {
           </Marker>
         ))}
 
-        {/* Custom zoom controls */}
-        <CustomZoomControls />
+        {/* Working zoom controls */}
+        <ZoomControls />
       </MapContainer>
 
       {/* Hamburger Menu */}
