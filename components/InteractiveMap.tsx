@@ -380,6 +380,7 @@ export default function BillyBobbyTravelMap() {
         center={[50.0, 10.0]} // Center of Europe
         zoom={5}
         className="w-full h-full z-10"
+        style={{ minHeight: '100vh', minWidth: '100vw', background: 'transparent' }}
         zoomControl={false}
         scrollWheelZoom={true}
         maxBounds={europeBounds}
@@ -388,8 +389,8 @@ export default function BillyBobbyTravelMap() {
         maxBoundsViscosity={1.0}
       >
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png"
+          attribution='&copy; OpenStreetMap, &copy; CartoDB'
         />
         
         {/* Travel routes */}
