@@ -275,6 +275,31 @@ body {
   pointer-events: auto !important;
 }
 
+/* Ensure map container and all children are interactive */
+.leaflet-container * {
+  pointer-events: auto !important;
+}
+
+/* Specific fixes for map interaction */
+.leaflet-dragging {
+  cursor: grabbing !important;
+}
+
+.leaflet-container:not(.leaflet-dragging) {
+  cursor: grab !important;
+}
+
+/* Ensure zoom controls work */
+.zoom-controls {
+  pointer-events: auto !important;
+  z-index: 1000 !important;
+}
+
+.zoom-controls button {
+  pointer-events: auto !important;
+  z-index: 1001 !important;
+}
+
 /* Fix any overlay interference */
 .title-section {
   pointer-events: none !important;
@@ -302,6 +327,16 @@ body {
 
 .map-container .leaflet-container {
   pointer-events: auto !important;
+}
+
+/* Critical: Ensure map is always interactive when overlay is disabled */
+.map-container[style*="pointer-events: auto"] .leaflet-container {
+  pointer-events: auto !important;
+  cursor: grab !important;
+}
+
+.map-container[style*="pointer-events: auto"] .leaflet-container:active {
+  cursor: grabbing !important;
 }
 
 /* Classic elegant title section */

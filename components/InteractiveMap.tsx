@@ -25,23 +25,35 @@ const europeBounds: LatLngBounds = new LatLngBounds(
 const ZoomControls = () => {
   const map = useMap()
   
-  const handleZoomIn = (e: React.MouseEvent) => {
+  const handleZoomIn = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    console.log('Zoom in clicked') // Debug
-    if (map) {
-      map.zoomIn()
-      console.log('Map zoomed in')
+    console.log('Zoom in clicked, map:', map) // Debug
+    if (map && typeof map.zoomIn === 'function') {
+      try {
+        map.zoomIn()
+        console.log('Map zoomed in successfully')
+      } catch (error) {
+        console.error('Error zooming in:', error)
+      }
+    } else {
+      console.error('Map not available or zoomIn not a function')
     }
   }
   
-  const handleZoomOut = (e: React.MouseEvent) => {
+  const handleZoomOut = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    console.log('Zoom out clicked') // Debug
-    if (map) {
-      map.zoomOut()
-      console.log('Map zoomed out')
+    console.log('Zoom out clicked, map:', map) // Debug
+    if (map && typeof map.zoomOut === 'function') {
+      try {
+        map.zoomOut()
+        console.log('Map zoomed out successfully')
+      } catch (error) {
+        console.error('Error zooming out:', error)
+      }
+    } else {
+      console.error('Map not available or zoomOut not a function')
     }
   }
   
@@ -56,6 +68,7 @@ const ZoomControls = () => {
       <button 
         onClick={handleZoomIn}
         onMouseDown={handleZoomIn}
+        onTouchStart={handleZoomIn}
         style={{
           width: '44px',
           height: '44px',
@@ -65,7 +78,9 @@ const ZoomControls = () => {
           cursor: 'pointer',
           fontSize: '18px',
           fontWeight: 'bold',
-          pointerEvents: 'auto'
+          pointerEvents: 'auto',
+          userSelect: 'none',
+          WebkitUserSelect: 'none'
         }}
       >
         +
@@ -73,6 +88,7 @@ const ZoomControls = () => {
       <button 
         onClick={handleZoomOut}
         onMouseDown={handleZoomOut}
+        onTouchStart={handleZoomOut}
         style={{
           width: '44px',
           height: '44px',
@@ -82,7 +98,9 @@ const ZoomControls = () => {
           cursor: 'pointer',
           fontSize: '18px',
           fontWeight: 'bold',
-          pointerEvents: 'auto'
+          pointerEvents: 'auto',
+          userSelect: 'none',
+          WebkitUserSelect: 'none'
         }}
       >
         −
@@ -335,22 +353,32 @@ export default function BillyBobbyTravelMap() {
       if (mapRef.current) {
         const map = mapRef.current;
         
-        // Enable all interactions
-        map.dragging.enable();
-        map.touchZoom.enable();
-        map.doubleClickZoom.enable();
-        map.scrollWheelZoom.enable();
-        map.boxZoom.enable();
-        map.keyboard.enable();
-        
-        console.log('Map interactions enabled');
+        try {
+          // Enable all interactions
+          map.dragging.enable();
+          map.touchZoom.enable();
+          map.doubleClickZoom.enable();
+          map.scrollWheelZoom.enable();
+          map.boxZoom.enable();
+          map.keyboard.enable();
+          
+          console.log('Map interactions enabled successfully');
+          
+          // Test if interactions are working
+          console.log('Dragging enabled:', map.dragging.enabled());
+          console.log('Touch zoom enabled:', map.touchZoom.enabled());
+          console.log('Scroll wheel zoom enabled:', map.scrollWheelZoom.enabled());
+        } catch (error) {
+          console.error('Error enabling map interactions:', error);
+        }
       }
     };
 
-    // Enable immediately and also after a short delay to ensure map is ready
+    // Enable immediately and also after delays to ensure map is ready
     enableMapInteractions();
     setTimeout(enableMapInteractions, 100);
     setTimeout(enableMapInteractions, 500);
+    setTimeout(enableMapInteractions, 1000);
   }, []);
 
   return (
@@ -376,9 +404,9 @@ export default function BillyBobbyTravelMap() {
       >
         {/* English-only tile layer */}
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          subdomains={['a', 'b', 'c']}
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          subdomains={['a', 'b', 'c', 'd']}
           maxZoom={18}
           minZoom={4}
         />
