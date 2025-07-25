@@ -135,11 +135,11 @@ const destinations: Destination[] = [
   // Add more visited/current cities as needed
 ];
 
-// Custom marker icons
+// Premium custom marker icons
 const createCustomIcon = (status: string) => {
   const colors = {
     visited: '#10B981', // Green
-    current: '#3B82F6', // Blue
+    current: '#2563eb', // Blue
   };
   return new Icon({
     iconUrl: `data:image/svg+xml;base64,${btoa(`
@@ -167,8 +167,8 @@ if (current && visited.length > 0) {
   travelRoutes.push([visited[visited.length - 1].coordinates, current.coordinates]);
 }
 
-// Modal component for destination details
-const DestinationModal = ({ destination, isOpen, onClose }: { destination: Destination | null, isOpen: boolean, onClose: () => void }) => {
+// Elegant location modal
+const LocationModal = ({ destination, isOpen, onClose }: { destination: Destination | null, isOpen: boolean, onClose: () => void }) => {
   if (!destination) return null;
 
   return (
@@ -193,16 +193,19 @@ const DestinationModal = ({ destination, isOpen, onClose }: { destination: Desti
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
+            className="location-modal"
           >
-            {/* Hero Image */}
-            <div className="relative h-64 overflow-hidden">
+            {/* Hero Image Section */}
+            <div className="modal-hero">
               <img
                 src={destination.image}
                 alt={destination.name}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <div className="modal-overlay">
+                <h2 className="location-title">{destination.name}</h2>
+                <p className="visit-date">{destination.visitDate}</p>
+              </div>
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
@@ -210,75 +213,39 @@ const DestinationModal = ({ destination, isOpen, onClose }: { destination: Desti
                 <X className="w-5 h-5 text-white" />
               </button>
             </div>
-
-            {/* Content */}
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-2">{destination.name}</h2>
-                  <p className="text-gray-600">{destination.country}</p>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className={`w-4 h-4 rounded-full ${destination.status === 'visited' ? 'bg-green-500' : 'bg-blue-500'}`}></div>
-                  <span className="text-sm text-gray-500 capitalize">{destination.status}</span>
-                </div>
-              </div>
-
-              <p className="text-gray-700 mb-6 leading-relaxed">{destination.description}</p>
-
-              {/* Highlights */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-3 text-gray-900">Highlights</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {destination.highlights.map((highlight, index) => (
-                    <div key={index} className="flex items-center space-x-2 text-sm text-gray-600">
-                      <Star className="w-4 h-4 text-yellow-500" />
-                      <span>{highlight}</span>
+            
+            {/* Content Section */}
+            <div className="modal-content">
+              {/* Photo Preview Grid */}
+              <div className="photo-preview">
+                <div className="photo-grid">
+                  {destination.stories.slice(0, 4).map((story, index) => (
+                    <div key={index} className="bg-gray-200 rounded-lg flex items-center justify-center">
+                      <Camera className="w-6 h-6 text-gray-500" />
                     </div>
                   ))}
+                  {destination.stories.length > 4 && (
+                    <div className="more-photos bg-gray-200 rounded-lg flex items-center justify-center text-sm font-medium text-gray-600">
+                      +{destination.stories.length - 4}
+                    </div>
+                  )}
                 </div>
               </div>
-
-              {/* Stories */}
-              {destination.stories && destination.stories.length > 0 ? (
-                <div>
-                  <h3 className="text-lg font-semibold mb-3 text-gray-900">Stories</h3>
-                  <div className="space-y-4">
-                    {destination.stories.map((story, index) => (
-                      <div key={index} className="border-l-4 border-blue-500 pl-4">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <Calendar className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm text-gray-500">{story.date}</span>
-                        </div>
-                        <h4 className="font-medium text-gray-900 mb-1">{story.title}</h4>
-                        <p className="text-gray-600 text-sm leading-relaxed">{story.content}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="text-6xl mb-4">🎒</div>
-                  <p className="text-gray-500">More stories coming soon!</p>
-                </div>
-              )}
-
-              {/* Action buttons */}
-              <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-200">
-                <div className="flex items-center space-x-4">
-                  <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors">
-                    <Heart className="w-5 h-5" />
-                    <span>Like</span>
-                  </button>
-                  <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors">
-                    <Share2 className="w-5 h-5" />
-                    <span>Share</span>
-                  </button>
-                </div>
-                <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                  View More
-                </button>
-              </div>
+              
+              {/* Brief Description */}
+              <p className="location-description text-gray-700 text-sm leading-relaxed">{destination.description}</p>
+              
+              {/* Call to Action */}
+              <button 
+                className="see-more-btn"
+                onClick={() => {
+                  // Navigate to dedicated location page
+                  console.log('Navigate to:', destination.id);
+                  onClose();
+                }}
+              >
+                See Full Story
+              </button>
             </div>
           </motion.div>
         </motion.div>
@@ -338,56 +305,8 @@ export default function BillyBobbyTravelMap() {
     setSelectedDestination(null);
   };
 
-  const visitedCount = destinations.filter(d => d.status === 'visited').length;
-  const countriesCount = new Set(destinations.map(d => d.country)).size;
-
   return (
     <div className="relative w-full h-screen overflow-hidden bg-gray-100">
-      {/* Header */}
-      <motion.div 
-        className="absolute top-0 left-0 right-0 z-30 p-6 text-white text-center"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
-      >
-        <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
-          The Adventures of Billy and Bobby
-        </h1>
-        <p className="text-xl md:text-2xl opacity-90 drop-shadow-lg max-w-2xl mx-auto">
-          Follow our journey across Europe! Click on the pins to see our stories, photos, and videos from each destination.
-        </p>
-        <div className="mt-6 flex items-center justify-center space-x-6 text-lg">
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-            <span>Visited</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
-            <span>Current</span>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Stats Corner */}
-      <motion.div 
-        className="absolute top-6 right-6 z-30 bg-white/20 backdrop-blur-sm rounded-lg p-4 text-white"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, delay: 0.7 }}
-      >
-        <h3 className="font-bold text-white mb-4">Journey Stats</h3>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-white/80">Cities Visited:</span>
-            <span className="font-semibold text-green-300">{visitedCount}</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-white/80">Countries:</span>
-            <span className="font-semibold text-purple-300">{countriesCount}</span>
-          </div>
-        </div>
-      </motion.div>
-
       {/* Map */}
       <MapContainer
         center={[50.0, 10.0]} // Center of Europe
@@ -411,7 +330,7 @@ export default function BillyBobbyTravelMap() {
           <Polyline
             key={index}
             positions={route}
-            color="#3B82F6"
+            color="#2563eb"
             weight={4}
             opacity={0.8}
             dashArray="15, 10"
@@ -445,8 +364,8 @@ export default function BillyBobbyTravelMap() {
       {/* Hamburger Menu */}
       <HamburgerMenu />
 
-      {/* Destination Modal */}
-      <DestinationModal 
+      {/* Location Modal */}
+      <LocationModal 
         destination={selectedDestination}
         isOpen={isModalOpen}
         onClose={closeModal}
