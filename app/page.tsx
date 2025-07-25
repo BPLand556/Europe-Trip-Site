@@ -27,6 +27,8 @@ export default function Home() {
       const vh = window.innerHeight;
       const scrollProgress = Math.min(scrolled / vh, 1);
       
+      console.log('Scroll progress:', scrollProgress, 'Scrolled:', scrolled, 'VH:', vh); // Debug
+      
       if (titleRef.current) {
         // Title fades out completely
         titleRef.current.style.opacity = String(1 - scrollProgress);
@@ -54,6 +56,10 @@ export default function Home() {
         }
       }
     };
+    
+    // Initial call to set starting state
+    handleScroll();
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -111,8 +117,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Spacer to allow scrolling */}
-      <div style={{ height: '120vh', position: 'relative', zIndex: 2 }}></div>
+      {/* Spacer to allow scrolling - increased height for full scroll experience */}
+      <div style={{ height: '200vh', position: 'relative', zIndex: 2 }}></div>
     </div>
   );
 } 

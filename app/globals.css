@@ -135,6 +135,11 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
 /* Hero section specific styles */
 .hero-gradient {
   background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 50%, #3730a3 100%);
