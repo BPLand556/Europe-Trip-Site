@@ -25,14 +25,24 @@ const europeBounds: LatLngBounds = new LatLngBounds(
 const ZoomControls = () => {
   const map = useMap()
   
-  const handleZoomIn = () => {
+  const handleZoomIn = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     console.log('Zoom in clicked') // Debug
-    map.zoomIn()
+    if (map) {
+      map.zoomIn()
+      console.log('Map zoomed in')
+    }
   }
   
-  const handleZoomOut = () => {
+  const handleZoomOut = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     console.log('Zoom out clicked') // Debug
-    map.zoomOut()
+    if (map) {
+      map.zoomOut()
+      console.log('Map zoomed out')
+    }
   }
   
   return (
@@ -44,7 +54,8 @@ const ZoomControls = () => {
       pointerEvents: 'auto' // CRITICAL
     }}>
       <button 
-        onMouseDown={handleZoomIn} // Use onMouseDown instead of onClick
+        onClick={handleZoomIn}
+        onMouseDown={handleZoomIn}
         style={{
           width: '44px',
           height: '44px',
@@ -60,6 +71,7 @@ const ZoomControls = () => {
         +
       </button>
       <button 
+        onClick={handleZoomOut}
         onMouseDown={handleZoomOut}
         style={{
           width: '44px',
@@ -319,19 +331,26 @@ export default function BillyBobbyTravelMap() {
 
   // Force enable all map interactions
   useEffect(() => {
-    if (mapRef.current) {
-      const map = mapRef.current;
-      
-      // Enable all interactions
-      map.dragging.enable();
-      map.touchZoom.enable();
-      map.doubleClickZoom.enable();
-      map.scrollWheelZoom.enable();
-      map.boxZoom.enable();
-      map.keyboard.enable();
-      
-      console.log('Map interactions enabled');
-    }
+    const enableMapInteractions = () => {
+      if (mapRef.current) {
+        const map = mapRef.current;
+        
+        // Enable all interactions
+        map.dragging.enable();
+        map.touchZoom.enable();
+        map.doubleClickZoom.enable();
+        map.scrollWheelZoom.enable();
+        map.boxZoom.enable();
+        map.keyboard.enable();
+        
+        console.log('Map interactions enabled');
+      }
+    };
+
+    // Enable immediately and also after a short delay to ensure map is ready
+    enableMapInteractions();
+    setTimeout(enableMapInteractions, 100);
+    setTimeout(enableMapInteractions, 500);
   }, []);
 
   return (
@@ -357,9 +376,9 @@ export default function BillyBobbyTravelMap() {
       >
         {/* English-only tile layer */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-          subdomains={['a', 'b', 'c', 'd']}
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          subdomains={['a', 'b', 'c']}
           maxZoom={18}
           minZoom={4}
         />
