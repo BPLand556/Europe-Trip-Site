@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 // Dynamically import the map component to prevent SSR issues
@@ -19,6 +19,7 @@ const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), {
 export default function Home() {
   const titleRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+  const [overlayPointerEvents, setOverlayPointerEvents] = useState<'auto' | 'none'>('auto');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,25 +31,22 @@ export default function Home() {
         // Title fades out completely
         titleRef.current.style.opacity = String(1 - scrollProgress);
         titleRef.current.style.transform = `translateY(-${scrollProgress * 50}px)`;
-        
-        // CRITICAL: Disable pointer events on title overlay when scrolling
+        // Only set pointer-events: none after scroll starts
         if (scrollProgress > 0.1) {
-          titleRef.current.style.pointerEvents = 'none';
+          setOverlayPointerEvents('none');
         } else {
-          titleRef.current.style.pointerEvents = 'auto';
+          setOverlayPointerEvents('auto');
         }
       }
       
       if (mapRef.current) {
         // Map becomes FULLY BOLD (not faded)
         mapRef.current.style.opacity = String(0.3 + (scrollProgress * 0.7)); // Goes to 1.0
-        
         // CRITICAL: Enable map interactions when scrolling starts
         if (scrollProgress > 0.1) {
           mapRef.current.style.pointerEvents = 'auto';
           mapRef.current.style.zIndex = '10';
         }
-        
         // Remove any filters when fully revealed
         if (scrollProgress > 0.95) {
           mapRef.current.style.filter = 'none';
@@ -74,36 +72,38 @@ export default function Home() {
           height: '100vh', 
           zIndex: 1, 
           transition: 'opacity 0.4s',
-          pointerEvents: 'auto' // CRITICAL: Must be 'auto'
+          pointerEvents: 'auto'
         }}
       >
         <InteractiveMap />
       </div>
 
-      {/* Classic elegant title overlay - CRITICAL: Don't block map interactions */}
+      {/* Classic elegant title overlay - position: fixed, full viewport, pointer-events toggled by scroll */}
       <div
         className="title-section"
         ref={titleRef}
         style={{ 
           background: '#FFFFFF',
           height: '100vh',
+          width: '100vw',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
-          position: 'relative',
+          position: 'fixed',
+          top: 0,
+          left: 0,
           zIndex: 20,
-          pointerEvents: 'none' // CRITICAL: Overlay should NOT block map
+          pointerEvents: overlayPointerEvents
         }}
       >
-        <div className="title-content" style={{ pointerEvents: 'none' }}>
+        <div className="title-content">
           <h1 className="main-title">
             THE ADVENTURES OF
             <br />
             BILLY AND BOBBY
           </h1>
           <p className="subtitle">A European Journey</p>
-          
           <div className="scroll-indicator">
             <div className="scroll-line"></div>
             <span className="scroll-text">Scroll</span>
@@ -112,7 +112,7 @@ export default function Home() {
       </div>
 
       {/* Spacer to allow scrolling */}
-      <div style={{ height: '100vh', position: 'relative', zIndex: 2 }}></div>
+      <div style={{ height: '120vh', position: 'relative', zIndex: 2 }}></div>
     </div>
   );
 } 
