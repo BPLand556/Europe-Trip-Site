@@ -25,45 +25,56 @@ const europeBounds: LatLngBounds = new LatLngBounds(
 const ZoomControls = () => {
   const map = useMap()
   
-  const handleZoom = (direction: 'in' | 'out') => {
-    console.log('Zoom button clicked:', direction)
-    console.log('Map instance:', map)
-    
-    if (!map) {
-      console.error('Map instance not found!')
-      return
-    }
-    
-    const currentZoom = map.getZoom()
-    console.log('Current zoom:', currentZoom)
-    
-    if (direction === 'in') {
-      map.zoomIn()
-    } else {
-      map.zoomOut()
-    }
+  const handleZoomIn = () => {
+    console.log('Zoom in clicked') // Debug
+    map.zoomIn()
+  }
+  
+  const handleZoomOut = () => {
+    console.log('Zoom out clicked') // Debug
+    map.zoomOut()
   }
   
   return (
-    <div className="zoom-controls">
-      <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => handleZoom('in')}
-        className="zoom-btn zoom-in"
-        type="button"
+    <div className="zoom-controls" style={{
+      position: 'absolute',
+      bottom: '30px',
+      right: '30px',
+      zIndex: 1000,
+      pointerEvents: 'auto' // CRITICAL
+    }}>
+      <button 
+        onMouseDown={handleZoomIn} // Use onMouseDown instead of onClick
+        style={{
+          width: '44px',
+          height: '44px',
+          background: 'white',
+          border: '2px solid #ddd',
+          borderRadius: '6px 6px 0 0',
+          cursor: 'pointer',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          pointerEvents: 'auto'
+        }}
       >
-        <Plus className="w-5 h-5 text-gray-700" />
-      </motion.button>
-      <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => handleZoom('out')}
-        className="zoom-btn zoom-out"
-        type="button"
+        +
+      </button>
+      <button 
+        onMouseDown={handleZoomOut}
+        style={{
+          width: '44px',
+          height: '44px',
+          background: 'white',
+          border: '2px solid #ddd',
+          borderRadius: '0 0 6px 6px',
+          cursor: 'pointer',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          pointerEvents: 'auto'
+        }}
       >
-        <Minus className="w-5 h-5 text-gray-700" />
-      </motion.button>
+        −
+      </button>
     </div>
   )
 }
@@ -294,6 +305,7 @@ const HamburgerMenu = () => {
 export default function BillyBobbyTravelMap() {
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const mapRef = useRef<any>(null);
 
   const handleMarkerClick = (destination: Destination) => {
     setSelectedDestination(destination);
@@ -305,24 +317,51 @@ export default function BillyBobbyTravelMap() {
     setSelectedDestination(null);
   };
 
+  // Force enable all map interactions
+  useEffect(() => {
+    if (mapRef.current) {
+      const map = mapRef.current;
+      
+      // Enable all interactions
+      map.dragging.enable();
+      map.touchZoom.enable();
+      map.doubleClickZoom.enable();
+      map.scrollWheelZoom.enable();
+      map.boxZoom.enable();
+      map.keyboard.enable();
+      
+      console.log('Map interactions enabled');
+    }
+  }, []);
+
   return (
     <div className="relative w-full h-screen overflow-hidden bg-gray-100">
       {/* Map */}
       <MapContainer
-        center={[50.0, 10.0]} // Center of Europe
+        ref={mapRef}
+        center={[54.5, 15.2]} // Center of Europe
         zoom={5}
         className="w-full h-full z-10"
         style={{ minHeight: '100vh', minWidth: '100vw', background: 'transparent' }}
         zoomControl={false}
         scrollWheelZoom={true}
+        doubleClickZoom={true}
+        dragging={true}
+        touchZoom={true}
+        boxZoom={true}
+        keyboard={true}
         maxBounds={europeBounds}
         minZoom={4}
         maxZoom={12}
         maxBoundsViscosity={1.0}
       >
+        {/* English-only tile layer */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap, &copy; CartoDB'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
+          attribution='&copy; OpenStreetMap contributors &copy; CARTO'
+          subdomains={['a', 'b', 'c', 'd']}
+          maxZoom={18}
+          minZoom={4}
         />
         
         {/* Travel routes */}

@@ -228,6 +228,51 @@ html {
   transition: none;
 } 
 
+/* Ensure map container is interactive */
+.leaflet-container {
+  height: 100vh !important;
+  width: 100vw !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 1 !important;
+  pointer-events: auto !important; /* CRITICAL */
+  cursor: grab;
+}
+
+.leaflet-container:active {
+  cursor: grabbing;
+}
+
+/* Fix any overlay interference */
+.title-section {
+  pointer-events: none !important;
+}
+
+.title-section * {
+  pointer-events: none !important;
+}
+
+/* Ensure zoom controls work */
+.zoom-controls {
+  pointer-events: auto !important;
+  z-index: 1000 !important;
+}
+
+.zoom-controls button {
+  pointer-events: auto !important;
+}
+
+/* Map container specific fixes */
+.map-container {
+  pointer-events: auto !important;
+  z-index: 1 !important;
+}
+
+.map-container .leaflet-container {
+  pointer-events: auto !important;
+}
+
 /* Classic elegant title section */
 .title-section {
   background: #FFFFFF;
@@ -236,6 +281,7 @@ html {
   align-items: center;
   justify-content: center;
   text-align: center;
+  pointer-events: none !important; /* CRITICAL: Don't block map */
 }
 
 /* Roman numeral style typography */
@@ -248,6 +294,7 @@ html {
   text-transform: uppercase;
   line-height: 1.1;
   margin: 0;
+  pointer-events: none !important;
 }
 
 .subtitle {
@@ -257,6 +304,7 @@ html {
   color: #666666;
   letter-spacing: 0.05em;
   margin-top: 2rem;
+  pointer-events: none !important;
 }
 
 /* Minimal scroll indicator */
@@ -266,6 +314,7 @@ html {
   flex-direction: column;
   align-items: center;
   opacity: 0.6;
+  pointer-events: none !important;
 }
 
 .scroll-line {
@@ -340,6 +389,7 @@ html {
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   border-radius: 8px;
   overflow: hidden;
+  pointer-events: auto !important;
 }
 
 .zoom-btn {
@@ -355,6 +405,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: auto !important;
 }
 
 .zoom-btn:hover {
