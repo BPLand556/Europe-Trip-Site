@@ -387,11 +387,11 @@ body {
 
 /* Fix any overlay interference */
 .title-section {
-  pointer-events: none !important;
+  /* Removed pointer-events: none to allow map interactions */
 }
 
 .title-section * {
-  pointer-events: none !important;
+  /* Removed pointer-events: none to allow map interactions */
 }
 
 /* Ensure zoom controls work */
@@ -443,7 +443,6 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  pointer-events: none !important; /* CRITICAL: Don't block map */
 }
 
 /* Roman numeral style typography */
@@ -456,7 +455,6 @@ body {
   text-transform: uppercase;
   line-height: 1.1;
   margin: 0;
-  pointer-events: none !important;
 }
 
 .subtitle {
@@ -466,7 +464,6 @@ body {
   color: #666666;
   letter-spacing: 0.05em;
   margin-top: 2rem;
-  pointer-events: none !important;
 }
 
 /* Minimal scroll indicator */
@@ -476,7 +473,6 @@ body {
   flex-direction: column;
   align-items: center;
   opacity: 0.6;
-  pointer-events: none !important;
 }
 
 .scroll-line {

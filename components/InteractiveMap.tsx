@@ -380,6 +380,7 @@ export default function BillyBobbyTravelMap() {
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const mapRef = useRef<any>(null)
+  const [mapLoaded, setMapLoaded] = useState(false)
 
   const handleMarkerClick = (destination: Destination) => {
     console.log('Marker clicked:', destination.name)
@@ -394,6 +395,8 @@ export default function BillyBobbyTravelMap() {
 
   // Force enable all map interactions
   useEffect(() => {
+    console.log('InteractiveMap component mounted')
+    
     const enableMapInteractions = () => {
       if (mapRef.current) {
         const map = mapRef.current
@@ -425,6 +428,8 @@ export default function BillyBobbyTravelMap() {
           map.on('zoom', () => console.log('Map zooming'))
           map.on('zoomend', () => console.log('Map zoom ended'))
           
+          setMapLoaded(true)
+          
         } catch (error) {
           console.error('Error enabling map interactions:', error)
         }
@@ -437,6 +442,8 @@ export default function BillyBobbyTravelMap() {
     setTimeout(enableMapInteractions, 500)
     setTimeout(enableMapInteractions, 1000)
   }, [])
+
+  console.log('Rendering InteractiveMap, mapLoaded:', mapLoaded)
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-gray-100">
@@ -470,9 +477,8 @@ export default function BillyBobbyTravelMap() {
       >
         {/* English-only tile layer */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-          subdomains={['a', 'b', 'c', 'd']}
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; OpenStreetMap contributors'
           maxZoom={18}
           minZoom={4}
         />
