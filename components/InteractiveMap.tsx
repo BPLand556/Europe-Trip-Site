@@ -21,7 +21,7 @@ const europeBounds: LatLngBounds = new LatLngBounds(
   [71.0, 45.0]   // Northeast coordinates
 )
 
-// WORKING ZOOM CONTROLS - MUST be inside MapContainer
+// FIXED ZOOM CONTROLS - MUST be inside MapContainer
 const ZoomControls = () => {
   const map = useMap()
   
@@ -89,7 +89,8 @@ const ZoomControls = () => {
           alignItems: 'center',
           justifyContent: 'center',
           color: '#333',
-          userSelect: 'none'
+          userSelect: 'none',
+          pointerEvents: 'auto'
         }}
       >
         +
@@ -109,7 +110,8 @@ const ZoomControls = () => {
           alignItems: 'center',
           justifyContent: 'center',
           color: '#333',
-          userSelect: 'none'
+          userSelect: 'none',
+          pointerEvents: 'auto'
         }}
       >
         −
@@ -406,11 +408,23 @@ export default function BillyBobbyTravelMap() {
           map.keyboard.enable()
           
           console.log('Map interactions enabled successfully')
+          console.log('Map object:', map)
+          console.log('Map dragging:', map.dragging)
+          console.log('Map touchZoom:', map.touchZoom)
           
           // Test if interactions are working
           console.log('Dragging enabled:', map.dragging.enabled())
           console.log('Touch zoom enabled:', map.touchZoom.enabled())
           console.log('Scroll wheel zoom enabled:', map.scrollWheelZoom.enabled())
+          
+          // Add event listeners to test interactions
+          map.on('dragstart', () => console.log('Map drag started'))
+          map.on('drag', () => console.log('Map dragging'))
+          map.on('dragend', () => console.log('Map drag ended'))
+          map.on('zoomstart', () => console.log('Map zoom started'))
+          map.on('zoom', () => console.log('Map zooming'))
+          map.on('zoomend', () => console.log('Map zoom ended'))
+          
         } catch (error) {
           console.error('Error enabling map interactions:', error)
         }
@@ -438,7 +452,8 @@ export default function BillyBobbyTravelMap() {
           position: 'fixed',
           top: 0,
           left: 0,
-          zIndex: 1
+          zIndex: 1,
+          pointerEvents: 'auto'
         }}
         zoomControl={false}
         dragging={true}           // Explicitly enable
@@ -481,7 +496,14 @@ export default function BillyBobbyTravelMap() {
             position={destination.coordinates}
             icon={createCustomIcon(destination.status)}
             eventHandlers={{
-              click: () => handleMarkerClick(destination)
+              click: (e) => {
+                console.log('Pin clicked:', destination.name)
+                e.originalEvent.stopPropagation()
+                handleMarkerClick(destination)
+              },
+              mouseover: () => {
+                console.log('Pin hovered:', destination.name)
+              }
             }}
           >
             <Popup>

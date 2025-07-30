@@ -33,8 +33,8 @@ export default function Home() {
         // Title fades out completely
         titleRef.current.style.opacity = String(1 - scrollProgress);
         titleRef.current.style.transform = `translateY(-${scrollProgress * 50}px)`;
-        // Only set pointer-events: none after scroll starts
-        if (scrollProgress > 0.1) {
+        // Disable pointer events immediately when scrolling starts
+        if (scrollProgress > 0.05) {
           setOverlayPointerEvents('none');
         } else {
           setOverlayPointerEvents('auto');
@@ -45,7 +45,7 @@ export default function Home() {
         // Map becomes FULLY BOLD (not faded)
         mapRef.current.style.opacity = String(0.3 + (scrollProgress * 0.7)); // Goes to 1.0
         // CRITICAL: Enable map interactions when scrolling starts
-        if (scrollProgress > 0.1) {
+        if (scrollProgress > 0.05) {
           mapRef.current.style.pointerEvents = 'auto';
           mapRef.current.style.zIndex = '10';
         }
@@ -100,7 +100,8 @@ export default function Home() {
           top: 0,
           left: 0,
           zIndex: 20,
-          pointerEvents: overlayPointerEvents
+          pointerEvents: overlayPointerEvents,
+          transition: 'pointer-events 0.1s'
         }}
       >
         <div className="title-content">

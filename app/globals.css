@@ -22,6 +22,16 @@
   pointer-events: auto !important;
 }
 
+/* Map container specific fixes */
+.map-container {
+  pointer-events: auto !important;
+  z-index: 1 !important;
+}
+
+.map-container * {
+  pointer-events: auto !important;
+}
+
 /* Specific fixes for map interaction */
 .leaflet-dragging {
   cursor: grabbing !important;
@@ -31,9 +41,34 @@
   cursor: grab !important;
 }
 
+/* Ensure markers are clickable */
+.leaflet-marker-icon {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  z-index: 1000 !important;
+}
+
+.leaflet-marker-icon:hover {
+  transform: scale(1.1);
+  z-index: 1001 !important;
+}
+
+/* Ensure zoom controls work */
+.zoom-controls {
+  pointer-events: auto !important;
+  z-index: 1000 !important;
+}
+
+.zoom-controls button {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* Ensure popups work */
 .leaflet-popup-content-wrapper {
   border-radius: 12px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  pointer-events: auto !important;
 }
 
 .leaflet-popup-tip {
@@ -99,9 +134,35 @@
   transition: all 0.3s ease;
 }
 
-.btn-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+/* Ensure no overlays block map interactions */
+.leaflet-overlay-pane {
+  pointer-events: auto !important;
+}
+
+.leaflet-marker-pane {
+  pointer-events: auto !important;
+}
+
+.leaflet-tooltip-pane {
+  pointer-events: auto !important;
+}
+
+/* Force enable all map interactions */
+.leaflet-container.leaflet-dragging {
+  cursor: grabbing !important;
+}
+
+.leaflet-container.leaflet-zoom-anim {
+  pointer-events: auto !important;
+}
+
+/* Title section should not block map when scrolled */
+.title-section {
+  transition: pointer-events 0.1s ease;
+}
+
+.title-section[style*="pointer-events: none"] {
+  pointer-events: none !important;
 }
 
 /* Map overlay styles */
