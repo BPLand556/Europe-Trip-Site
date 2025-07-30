@@ -21,7 +21,7 @@ const europeBounds: LatLngBounds = new LatLngBounds(
   [71.0, 45.0]   // Northeast coordinates
 )
 
-// FIXED ZOOM CONTROLS - MUST be inside MapContainer
+// WORKING ZOOM CONTROLS - MUST be inside MapContainer
 const ZoomControls = () => {
   const map = useMap()
   
@@ -380,7 +380,6 @@ export default function BillyBobbyTravelMap() {
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const mapRef = useRef<any>(null)
-  const [mapLoaded, setMapLoaded] = useState(false)
 
   const handleMarkerClick = (destination: Destination) => {
     console.log('Marker clicked:', destination.name)
@@ -428,8 +427,6 @@ export default function BillyBobbyTravelMap() {
           map.on('zoom', () => console.log('Map zooming'))
           map.on('zoomend', () => console.log('Map zoom ended'))
           
-          setMapLoaded(true)
-          
         } catch (error) {
           console.error('Error enabling map interactions:', error)
         }
@@ -443,7 +440,7 @@ export default function BillyBobbyTravelMap() {
     setTimeout(enableMapInteractions, 1000)
   }, [])
 
-  console.log('Rendering InteractiveMap, mapLoaded:', mapLoaded)
+  console.log('Rendering InteractiveMap')
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-gray-100">
@@ -475,10 +472,10 @@ export default function BillyBobbyTravelMap() {
         maxZoom={12}
         maxBoundsViscosity={1.0}
       >
-        {/* English-only tile layer */}
+        {/* English-only tile layer - using Mapbox for better control */}
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap contributors'
+          url="https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw"
+          attribution='&copy; Mapbox'
           maxZoom={18}
           minZoom={4}
         />

@@ -27,14 +27,14 @@ export default function Home() {
       const vh = window.innerHeight;
       const scrollProgress = Math.min(scrolled / vh, 1);
       
-      console.log('Scroll progress:', scrollProgress, 'Scrolled:', scrolled, 'VH:', vh); // Debug
+      console.log('Scroll progress:', scrollProgress, 'Scrolled:', scrolled, 'VH:', vh);
       
       if (titleRef.current) {
         // Title fades out completely
         titleRef.current.style.opacity = String(1 - scrollProgress);
         titleRef.current.style.transform = `translateY(-${scrollProgress * 50}px)`;
         // Disable pointer events immediately when scrolling starts
-        if (scrollProgress > 0.05) {
+        if (scrollProgress > 0.01) {
           setOverlayPointerEvents('none');
         } else {
           setOverlayPointerEvents('auto');
@@ -45,7 +45,7 @@ export default function Home() {
         // Map becomes FULLY BOLD (not faded)
         mapRef.current.style.opacity = String(0.3 + (scrollProgress * 0.7)); // Goes to 1.0
         // CRITICAL: Enable map interactions when scrolling starts
-        if (scrollProgress > 0.05) {
+        if (scrollProgress > 0.01) {
           mapRef.current.style.pointerEvents = 'auto';
           mapRef.current.style.zIndex = '10';
         }
