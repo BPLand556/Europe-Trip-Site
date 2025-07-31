@@ -1,255 +1,94 @@
-'use client'
+import React, { useRef, useState } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  Polyline,
+  ZoomControl
+} from "react-leaflet";
+import L from "leaflet";
+import { locations } from "../data/locations";
+import "leaflet/dist/leaflet.css";
+import "./MapView.css";
 
-import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L, { LatLngExpression } from 'leaflet';
-
-// Fix Leaflet default marker icons (REQUIRED)
+// fix default icon paths
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+  iconUrl:      require("leaflet/dist/images/marker-icon.png"),
+  shadowUrl:    require("leaflet/dist/images/marker-shadow.png")
 });
 
-// Custom Zoom Controls Component
-const ZoomControls = () => {
-  const map = useMap();
-  
-  const handleZoomIn = (e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    map.zoomIn();
-  };
-  
-  const handleZoomOut = (e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    map.zoomOut();
-  };
-  
-  return (
-    <div style={{
-      position: 'absolute',
-      bottom: '20px',
-      right: '20px',
-      zIndex: 1000,
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundColor: 'white',
-      borderRadius: '4px',
-      boxShadow: '0 1px 5px rgba(0,0,0,0.4)',
-      overflow: 'hidden'
-    }}>
-      <button
-        onMouseDown={handleZoomIn}
-        onTouchStart={handleZoomIn}
-        style={{
-          width: '30px',
-          height: '30px',
-          border: 'none',
-          backgroundColor: 'white',
-          cursor: 'pointer',
-          fontSize: '18px',
-          fontWeight: 'bold',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderBottom: '1px solid #ccc'
-        }}
-      >
-        +
-      </button>
-      <button
-        onMouseDown={handleZoomOut}
-        onTouchStart={handleZoomOut}
-        style={{
-          width: '30px',
-          height: '30px',
-          border: 'none',
-          backgroundColor: 'white',
-          cursor: 'pointer',
-          fontSize: '18px',
-          fontWeight: 'bold',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        −
-      </button>
-    </div>
-  );
-};
+export default function MapView() {
+  const mapRef = useRef<L.Map | null>(null);
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-// Hamburger Menu Component
-const HamburgerMenu = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  return (
-    <>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          position: 'absolute',
-          top: '20px',
-          left: '20px',
-          zIndex: 1000,
-          width: '40px',
-          height: '40px',
-          backgroundColor: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          boxShadow: '0 1px 5px rgba(0,0,0,0.4)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '3px'
-        }}
-      >
-        <div style={{ width: '20px', height: '2px', backgroundColor: '#333' }}></div>
-        <div style={{ width: '20px', height: '2px', backgroundColor: '#333' }}></div>
-        <div style={{ width: '20px', height: '2px', backgroundColor: '#333' }}></div>
-      </button>
-      
-      {isOpen && (
-        <div style={{
-          position: 'absolute',
-          top: '70px',
-          left: '20px',
-          zIndex: 1000,
-          backgroundColor: 'white',
-          padding: '20px',
-          borderRadius: '4px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
-          minWidth: '200px'
-        }}>
-          <h3>Menu</h3>
-          <p>About our journey</p>
-          <p>Contact us</p>
-        </div>
-      )}
-    </>
-  );
-};
+  // extract just the coords array for the polyline
+  const trail = locations.map(d => d.coordinates);
 
-interface Destination {
-  id: number;
-  name: string;
-  position: LatLngExpression;
-  imgUrl: string;
-}
-
-// Main Map Component
-const TravelMap = () => {
-  const [selectedLocation, setSelectedLocation] = useState<Destination | null>(null);
-  
-  // Sample destinations (replace with your actual data)
-  const destinations: Destination[] = [
-    { id: 1, name: 'Netherlands', position: [52.09179, 5.11121], imgUrl: 'https://via.placeholder.com/300?text=Netherlands' },
-    { id: 2, name: 'Paris', position: [48.8566, 2.3522], imgUrl: 'https://via.placeholder.com/300?text=Paris' },
-    { id: 3, name: 'Rome', position: [41.9028, 12.4964], imgUrl: 'https://via.placeholder.com/300?text=Rome' },
-    { id: 4, name: 'Mallorca', position: [39.6953, 3.0176], imgUrl: 'https://via.placeholder.com/300?text=Mallorca' }
-  ];
-  
-  const handleMarkerClick = (destination: Destination) => {
-    console.log('Marker clicked:', destination.name);
-    setSelectedLocation(destination);
+  const flyTo = (coords: [number, number], idx: number) => {
+    if (!mapRef.current) return;
+    mapRef.current.flyTo(coords, 6, { duration: 1.2 });
+    setOpenIdx(idx);
   };
-  
+
   return (
-    <div style={{ height: '100vh', width: '100vw', position: 'relative' }}>
+    <div className="map-wrapper">
+      <button
+        className="hamburger"
+        onClick={() => setSidebarOpen(o => !o)}
+      >
+        ☰
+      </button>
+
+      <nav className={`sidebar ${sidebarOpen ? "open" : ""}`}>
+        <ul>
+          {locations.map((d, i) => (
+            <li key={i} onClick={() => flyTo(d.coordinates, i)}>
+              <img src={d.images[0]?.url || "https://via.placeholder.com/300?text=" + d.name} alt={d.name} />
+              <span>{d.name}</span>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
       <MapContainer
-        center={[50.0, 10.0]}
+        center={trail[0]}
         zoom={5}
-        style={{ height: '100%', width: '100%' }}
+        style={{ width: "100%", height: "100%" }}
+        ref={mapRef}
         zoomControl={false}
-        scrollWheelZoom={true}
-        dragging={true}
-        touchZoom={true}
-        doubleClickZoom={true}
-        boxZoom={true}
-        keyboard={true}
       >
-        {/* Map Tiles - WORKING ENGLISH TILES */}
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          maxZoom={19}
+          attribution="© OpenStreetMap contributors"
         />
-        
-        {/* Custom Zoom Controls */}
-        <ZoomControls />
-        
-        {/* Destination Markers */}
-        {destinations.map((destination) => (
+        <ZoomControl position="bottomright" />
+        <Polyline positions={trail} />
+
+        {locations.map((d, i) => (
           <Marker
-            key={destination.id}
-            position={destination.position}
+            key={i}
+            position={d.coordinates}
             eventHandlers={{
-              click: () => handleMarkerClick(destination)
+              click: () => setOpenIdx(i)
             }}
           >
-            <Popup>
-              <div>
-                <h3>{destination.name}</h3>
-                <p>Click for more details</p>
-              </div>
-            </Popup>
+            {openIdx === i && (
+              <Popup>
+                <h3>{d.name}</h3>
+                <img
+                  src={d.images[0]?.url || "https://via.placeholder.com/300?text=" + d.name}
+                  alt={d.name}
+                  style={{ width: "100%", borderRadius: "4px" }}
+                />
+              </Popup>
+            )}
           </Marker>
         ))}
       </MapContainer>
-      
-      {/* Hamburger Menu */}
-      <HamburgerMenu />
-      
-      {/* Modal for selected location */}
-      {selectedLocation && (
-        <div style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: 'white',
-          padding: '20px',
-          borderRadius: '8px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-          zIndex: 2000,
-          minWidth: '300px'
-        }}>
-          <h2>{selectedLocation.name}</h2>
-          <img 
-            src={selectedLocation.imgUrl} 
-            alt={selectedLocation.name}
-            style={{
-              width: '100%',
-              height: '200px',
-              objectFit: 'cover',
-              borderRadius: '4px',
-              marginBottom: '10px'
-            }}
-          />
-          <p>Details about our visit to {selectedLocation.name}</p>
-          <button 
-            onClick={() => setSelectedLocation(null)}
-            style={{
-              marginTop: '10px',
-              padding: '8px 16px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Close
-          </button>
-        </div>
-      )}
     </div>
   );
-};
-
-export default TravelMap; 
+} 
