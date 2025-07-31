@@ -139,6 +139,7 @@ interface Destination {
   id: number;
   name: string;
   position: LatLngExpression;
+  imgUrl: string;
 }
 
 // Main Map Component
@@ -147,10 +148,10 @@ const TravelMap = () => {
   
   // Sample destinations (replace with your actual data)
   const destinations: Destination[] = [
-    { id: 1, name: 'Paris', position: [48.8566, 2.3522] },
-    { id: 2, name: 'Amsterdam', position: [52.3676, 4.9041] },
-    { id: 3, name: 'Barcelona', position: [41.3851, 2.1734] },
-    { id: 4, name: 'Rome', position: [41.9028, 12.4964] }
+    { id: 1, name: 'Netherlands', position: [52.09179, 5.11121], imgUrl: 'https://via.placeholder.com/300?text=Netherlands' },
+    { id: 2, name: 'Paris', position: [48.8566, 2.3522], imgUrl: 'https://via.placeholder.com/300?text=Paris' },
+    { id: 3, name: 'Rome', position: [41.9028, 12.4964], imgUrl: 'https://via.placeholder.com/300?text=Rome' },
+    { id: 4, name: 'Mallorca', position: [39.6953, 3.0176], imgUrl: 'https://via.placeholder.com/300?text=Mallorca' }
   ];
   
   const handleMarkerClick = (destination: Destination) => {
@@ -219,6 +220,17 @@ const TravelMap = () => {
           minWidth: '300px'
         }}>
           <h2>{selectedLocation.name}</h2>
+          <img 
+            src={selectedLocation.imgUrl} 
+            alt={selectedLocation.name}
+            style={{
+              width: '100%',
+              height: '200px',
+              objectFit: 'cover',
+              borderRadius: '4px',
+              marginBottom: '10px'
+            }}
+          />
           <p>Details about our visit to {selectedLocation.name}</p>
           <button 
             onClick={() => setSelectedLocation(null)}
