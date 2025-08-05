@@ -8,7 +8,7 @@ import {
   ZoomControl
 } from "react-leaflet";
 import L from "leaflet";
-import stops from "../data/simple-locations";
+import stops from "./data";
 import "./MapView.css";
 
 // fix Leaflet's default icon paths
@@ -25,7 +25,7 @@ export default function MapView() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   // extract just the coords arrays for the polyline
-  const trail = stops.map(s => s.coords);
+  const trail = stops.map((s: any) => s.coords);
 
   // fly to a stop and open its popup
   const flyToStop = (coords: [number, number], idx: number) => {
@@ -44,7 +44,7 @@ export default function MapView() {
 
       <aside className={`sidebar ${menuOpen ? "open" : ""}`}>
         <ul>
-          {stops.map((s,i) => (
+          {stops.map((s: any, i: number) => (
             <li key={i} onClick={() => flyToStop(s.coords as [number, number], i)}>
               <img src={s.img} alt={s.name} />
               <span>{s.name}</span>
@@ -75,7 +75,7 @@ export default function MapView() {
         <Polyline positions={trail as [number, number][]} color="#1978c8" weight={4} />
 
         {/* markers + popups */}
-        {stops.map((s, i) => (
+        {stops.map((s: any, i: number) => (
           <Marker
             key={i}
             position={s.coords as [number, number]}
