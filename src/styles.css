@@ -19,9 +19,14 @@ body {
   min-height: 100vh;
 }
 
+/* optional: smooth scroll when clicking "SCROLL" button */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Hero Section */
 .hero {
-  height: 100vh;
+  height: 100vh;            /* fill exactly the viewport */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -49,6 +54,13 @@ body {
   font-weight: 300;
   font-family: 'Georgia', serif;
   opacity: 0.9;
+}
+
+/* position your scroll button */
+.hero .scroll-btn {
+  position: absolute;
+  bottom: 2rem;
+  cursor: pointer;
 }
 
 .scroll-button {
@@ -187,11 +199,11 @@ body {
   .hero-title {
     font-size: 2.5rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1.2rem;
   }
-  
+
   .sidebar {
     width: 240px;
     left: -240px;
@@ -202,11 +214,11 @@ body {
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
   }
-  
+
   .scroll-button {
     padding: 0.8rem 1.5rem;
     font-size: 0.9rem;
