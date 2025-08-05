@@ -5,6 +5,12 @@
   box-sizing: border-box;
 }
 
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -19,14 +25,14 @@ body {
   min-height: 100vh;
 }
 
-/* optional: smooth scroll when clicking "SCROLL" button */
+/* optional: smooth on any anchor-scrolling */
 html {
   scroll-behavior: smooth;
 }
 
 /* Hero Section */
 .hero {
-  height: 100vh;            /* fill exactly the viewport */
+  height: 100vh;              /* exactly one screen tall */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -56,10 +62,15 @@ html {
   opacity: 0.9;
 }
 
-/* position your scroll button */
-.hero .scroll-btn {
+/* position the button at the bottom of the hero */
+.scroll-btn {
   position: absolute;
   bottom: 2rem;
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
   cursor: pointer;
 }
 
