@@ -1,164 +1,103 @@
-# 🌍 The Adventures of Billy and Bobby - European Travel Map
+# The Adventures of Billy and Bobby - European Journey
 
-A stunning interactive travel map website that tells the story of Billy and Bobby's incredible journey across Europe. Built with modern web technologies and featuring beautiful animations, this site offers an immersive experience for exploring travel stories.
+A beautiful, interactive web application showcasing Billy and Bobby's European adventure with a stunning hero section and an interactive map.
 
-## ✨ Features
+## 🚀 Features
 
-- **🗺️ Interactive European Map** - Smooth zoom, pan, and hover interactions
-- **📍 Smart Location Markers** - Visited, current, and planned destinations
-- **📖 Rich Story Modals** - Beautiful photo galleries, videos, and travel stories
-- **🎨 Modern Design** - Glass morphism effects, smooth animations, premium UI
-- **📱 Fully Responsive** - Optimized for mobile, tablet, and desktop
-- **⚡ Performance Optimized** - Fast loading with 60fps animations
-- **🔍 Search & Filter** - Find locations and filter by journey phase
-- **📊 Journey Timeline** - Visual progression through the adventure
+### Hero Section
+- **Full-screen viewport** (100vh) with beautiful gradient background
+- **Centered title** "The Adventures of Billy and Bobby" in bold, fun display font
+- **Subtitle** "A European Journey" in elegant serif font
+- **Smooth scroll button** that animates to the map section
 
-## 🛠️ Tech Stack
+### Interactive Map Section
+- **80vh height** with CartoDB Positron tiles (English labels only)
+- **Fully interactive** with all controls enabled:
+  - Drag to pan
+  - Mouse wheel zoom
+  - Double-click zoom
+  - Box zoom selection
+  - Touch zoom (mobile)
+  - Keyboard navigation
+- **Zoom controls** positioned in bottom-right
+- **Blue polyline** connecting all destinations
+- **Clickable markers** with popups showing city images
+- **Hamburger menu** (☰) in top-left with sliding sidebar
+- **Fly-to animations** when clicking sidebar destinations
 
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first styling
-- **Framer Motion** - Smooth animations and transitions
-- **Lucide React** - Beautiful vector icons
-- **Custom SVG Map** - High-quality European map visualization
+### European Destinations
+- **Netherlands** (Amsterdam area)
+- **Paris** (France)
+- **Rome** (Italy)
+- **Mallorca** (Spain)
 
-## 🚀 Getting Started
+## 🛠️ Setup Instructions
 
-### Prerequisites
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-- Node.js 18+ 
-- npm or yarn
+2. **Start development server:**
+   ```bash
+   npm run dev
+   ```
 
-### Installation
+3. **Open your browser** to `http://localhost:3000`
 
-1. Clone the repository:
-```bash
-git clone https://github.com/BPLand556/Europe-Trip-Site.git
-cd Europe-Trip-Site
-```
+## 🎯 How to Use
 
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Run the development server:
-```bash
-npm run dev
-```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 📦 Build & Deploy
-
-### Build for Production
-```bash
-npm run build
-```
-
-### Deploy to GitHub Pages
-The site is automatically deployed to GitHub Pages when you push to the main branch.
-
-## 🎨 Design System
-
-### Color Palette
-- **Primary**: Deep Navy (#1a365d)
-- **Gold**: Warm Gold (#d69e2e) 
-- **Gray**: Sophisticated Grays (#f3f4f6, #9ca3af)
-- **Background**: Gradient with muted tones
-
-### Typography
-- **Headings**: Playfair Display (elegant serif)
-- **Body**: Inter (clean sans-serif)
-
-### Animations
-- Smooth hover effects
-- Micro-interactions
-- Progressive loading
-- Glass morphism effects
+1. **Hero Section**: View the beautiful landing page with title and subtitle
+2. **Scroll Down**: Click the "SCROLL" button to smoothly scroll to the map
+3. **Map Interaction**: 
+   - Drag to pan around Europe
+   - Use mouse wheel or zoom buttons to zoom in/out
+   - Click markers to see city popups with images
+4. **Sidebar Navigation**: 
+   - Click the ☰ hamburger button to open the sidebar
+   - Click any city in the sidebar to fly to that location
+   - The sidebar will automatically close after flying to a destination
 
 ## 📁 Project Structure
 
 ```
-├── app/                    # Next.js App Router
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Home page
-├── components/            # React components
-│   ├── InteractiveMap.tsx # Main map component
-│   ├── Header.tsx         # Site header
-│   ├── StatsDashboard.tsx # Statistics display
-│   ├── FilterPanel.tsx    # Location filters
-│   ├── JourneyTimeline.tsx # Journey progression
-│   └── LocationModal.tsx  # Location details modal
-├── data/                  # Static data
-│   └── locations.ts       # Location and journey data
-├── types/                 # TypeScript definitions
-│   └── index.ts           # Type interfaces
-└── public/               # Static assets
+europe-trip-site/
+├── index.html              # Main HTML file
+├── package.json            # Dependencies and scripts
+├── vite.config.js          # Vite configuration
+├── src/
+│   ├── main.jsx           # React entry point
+│   ├── App.jsx            # Main app component
+│   ├── MapView.jsx        # Interactive map component
+│   ├── data.js            # European destinations data
+│   └── styles.css         # All styling
+└── README.md              # This file
 ```
 
-## 🌟 Key Components
+## 🎨 Technologies Used
 
-### InteractiveMap
-The heart of the application featuring:
-- Custom SVG European map
-- Programmatic marker positioning
-- Animated route lines
-- Hover interactions
-- Responsive design
+- **React 18** - Modern React with hooks
+- **Vite** - Fast build tool and dev server
+- **React-Leaflet** - React components for Leaflet maps
+- **Leaflet** - Interactive maps library
+- **CartoDB** - Beautiful map tiles with English labels
 
-### LocationModal
-Rich storytelling component with:
-- Hero images with parallax effects
-- Photo galleries
-- Video integration
-- Social sharing
-- Weather and accommodation info
+## 🌟 Key Features
 
-### StatsDashboard
-Real-time journey statistics:
-- Total distance traveled
-- Countries visited
-- Days on the road
-- Photos taken
+- **Responsive Design** - Works on desktop, tablet, and mobile
+- **Smooth Animations** - CSS transitions and fly-to animations
+- **Modern UI** - Clean, beautiful design with gradients and shadows
+- **Interactive Map** - Full Leaflet functionality with custom controls
+- **Performance Optimized** - Fast loading and smooth interactions
 
-## 🎯 Performance Features
+## 🚀 Build for Production
 
-- **Static Export** - Optimized for GitHub Pages
-- **Image Optimization** - Responsive images with lazy loading
-- **Code Splitting** - Dynamic imports for better performance
-- **Animation Optimization** - 60fps smooth animations
-- **Accessibility** - WCAG compliant design
+```bash
+npm run build
+```
 
-## 📱 Responsive Design
-
-- **Mobile First** - Optimized for touch interactions
-- **Tablet Friendly** - Enhanced navigation for tablets
-- **Desktop Experience** - Full-featured desktop interface
-- **Cross Browser** - Works on all modern browsers
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Unsplash** - Beautiful travel photography
-- **Lucide** - Elegant vector icons
-- **Tailwind CSS** - Utility-first styling
-- **Framer Motion** - Smooth animations
+This creates a `dist` folder with optimized files ready for deployment.
 
 ---
 
-**Built with ❤️ for sharing amazing travel stories**
-
-*The Adventures of Billy and Bobby - Where every journey tells a story* # Last updated: Thu Jul 24 16:56:19 MDT 2025
+**Enjoy exploring Billy and Bobby's European adventure!** 🗺️✈️
