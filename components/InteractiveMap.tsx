@@ -8,11 +8,10 @@ import {
   ZoomControl
 } from "react-leaflet";
 import L from "leaflet";
-import data from "../data/simple-locations";
-import "leaflet/dist/leaflet.css";
+import stops from "../data/simple-locations";
 import "./MapView.css";
 
-// fix default icon paths
+// fix Leaflet's default icon paths
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -23,65 +22,71 @@ L.Icon.Default.mergeOptions({
 export default function MapView() {
   const mapRef = useRef<L.Map | null>(null);
   const [openIdx, setOpenIdx] = useState<number | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // extract just the coords array for the polyline
-  const trail = data.map(d => d.coords);
+  // extract just the coords arrays for the polyline
+  const trail = stops.map(s => s.coords);
 
-  const flyTo = (coords: [number, number], idx: number) => {
+  // fly to a stop and open its popup
+  const flyToStop = (coords: [number, number], idx: number) => {
     if (!mapRef.current) return;
-    mapRef.current.flyTo(coords as [number, number], 6, { duration: 1.2 });
+    mapRef.current.flyTo(coords, 6, { duration: 1 });
     setOpenIdx(idx);
+    setMenuOpen(false);
   };
 
   return (
     <div className="map-wrapper">
       <button
         className="hamburger"
-        onClick={() => setSidebarOpen(o => !o)}
-      >
-        ☰
-      </button>
+        onClick={() => setMenuOpen(o => !o)}
+      >☰</button>
 
-      <nav className={`sidebar ${sidebarOpen ? "open" : ""}`}>
+      <aside className={`sidebar ${menuOpen ? "open" : ""}`}>
         <ul>
-          {data.map((d, i) => (
-            <li key={i} onClick={() => flyTo(d.coords as [number, number], i)}>
-              <img src={d.img} alt={d.name} />
-              <span>{d.name}</span>
+          {stops.map((s,i) => (
+            <li key={i} onClick={() => flyToStop(s.coords as [number, number], i)}>
+              <img src={s.img} alt={s.name} />
+              <span>{s.name}</span>
             </li>
           ))}
         </ul>
-      </nav>
+      </aside>
 
       <MapContainer
-        center={trail[0] as [number, number]}
+        center={[50, 10]}       // ← Europe
         zoom={5}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "80vh" }}
         ref={mapRef}
         zoomControl={false}
+        scrollWheelZoom={true}
+        dragging={true}
       >
+        {/* English-only base map from CartoDB */}
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="© OpenStreetMap contributors"
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://carto.com/attributions">CARTO</a> &copy; OpenStreetMap'
         />
-        <ZoomControl position="bottomright" />
-        <Polyline positions={trail as [number, number][]} />
 
-        {data.map((d, i) => (
+        {/* move zoom buttons to bottom-right */}
+        <ZoomControl position="bottomright" />
+
+        {/* blue line connecting your stops */}
+        <Polyline positions={trail as [number, number][]} color="#1978c8" weight={4} />
+
+        {/* markers + popups */}
+        {stops.map((s, i) => (
           <Marker
             key={i}
-            position={d.coords as [number, number]}
-            eventHandlers={{
-              click: () => setOpenIdx(i)
-            }}
+            position={s.coords as [number, number]}
+            eventHandlers={{ click: () => setOpenIdx(i) }}
           >
             {openIdx === i && (
               <Popup>
-                <h3>{d.name}</h3>
+                <h3>{s.name}</h3>
                 <img
-                  src={d.img}
-                  alt={d.name}
+                  src={s.img}
+                  alt={s.name}
                   style={{ width: "100%", borderRadius: "4px" }}
                 />
               </Popup>
