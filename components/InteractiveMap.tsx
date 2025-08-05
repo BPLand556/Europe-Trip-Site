@@ -8,7 +8,7 @@ import {
   ZoomControl
 } from "react-leaflet";
 import L from "leaflet";
-import { locations } from "../data/locations";
+import data from "../data/simple-locations";
 import "leaflet/dist/leaflet.css";
 import "./MapView.css";
 
@@ -26,11 +26,11 @@ export default function MapView() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // extract just the coords array for the polyline
-  const trail = locations.map(d => d.coordinates);
+  const trail = data.map(d => d.coords);
 
   const flyTo = (coords: [number, number], idx: number) => {
     if (!mapRef.current) return;
-    mapRef.current.flyTo(coords, 6, { duration: 1.2 });
+    mapRef.current.flyTo(coords as [number, number], 6, { duration: 1.2 });
     setOpenIdx(idx);
   };
 
@@ -45,9 +45,9 @@ export default function MapView() {
 
       <nav className={`sidebar ${sidebarOpen ? "open" : ""}`}>
         <ul>
-          {locations.map((d, i) => (
-            <li key={i} onClick={() => flyTo(d.coordinates, i)}>
-              <img src={d.images[0]?.url || "https://via.placeholder.com/300?text=" + d.name} alt={d.name} />
+          {data.map((d, i) => (
+            <li key={i} onClick={() => flyTo(d.coords as [number, number], i)}>
+              <img src={d.img} alt={d.name} />
               <span>{d.name}</span>
             </li>
           ))}
@@ -55,7 +55,7 @@ export default function MapView() {
       </nav>
 
       <MapContainer
-        center={trail[0]}
+        center={trail[0] as [number, number]}
         zoom={5}
         style={{ width: "100%", height: "100%" }}
         ref={mapRef}
@@ -66,12 +66,12 @@ export default function MapView() {
           attribution="© OpenStreetMap contributors"
         />
         <ZoomControl position="bottomright" />
-        <Polyline positions={trail} />
+        <Polyline positions={trail as [number, number][]} />
 
-        {locations.map((d, i) => (
+        {data.map((d, i) => (
           <Marker
             key={i}
-            position={d.coordinates}
+            position={d.coords as [number, number]}
             eventHandlers={{
               click: () => setOpenIdx(i)
             }}
@@ -80,7 +80,7 @@ export default function MapView() {
               <Popup>
                 <h3>{d.name}</h3>
                 <img
-                  src={d.images[0]?.url || "https://via.placeholder.com/300?text=" + d.name}
+                  src={d.img}
                   alt={d.name}
                   style={{ width: "100%", borderRadius: "4px" }}
                 />
