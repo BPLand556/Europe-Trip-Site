@@ -5,10 +5,17 @@
   box-sizing: border-box;
 }
 
+/* allow the page to grow past one screen and scroll normally */
 html, body, #root {
-  height: 100%;
+  height: auto !important;
+  overflow-y: auto !important;
   margin: 0;
   padding: 0;
+}
+
+/* optional: smooth on any anchor-scrolling */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -25,22 +32,14 @@ body {
   min-height: 100vh;
 }
 
-/* optional: smooth on any anchor-scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
 /* Hero Section */
 .hero {
-  height: 100vh;              /* exactly one screen tall */
+  position: relative;   /* not absolute */
+  height: 100vh;        /* exactly one viewport tall */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  text-align: center;
-  position: relative;
 }
 
 .hero-content {
@@ -74,7 +73,7 @@ html {
   cursor: pointer;
 }
 
-.scroll-button {
+.scroll-button { /* This class might be a remnant or alternative, but .scroll-btn is the active one */
   position: absolute;
   bottom: 2rem;
   left: 50%;
@@ -110,6 +109,12 @@ html {
 }
 
 /* Map Section */
+#mapSection {
+  position: relative;
+  width: 100%;
+  /* let the MapView control its own height */
+}
+
 .map-section {
   height: 80vh;
   position: relative;

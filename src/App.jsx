@@ -6,7 +6,6 @@ export default function App() {
   return (
     <>
       <Hero />
-      {/* this ID is what we scroll to */}
       <section id="mapSection">
         <MapView />
       </section>
