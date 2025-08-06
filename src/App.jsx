@@ -6,9 +6,8 @@ export default function App() {
   return (
     <>
       <Hero />
-      <section id="mapSection">
-        <MapView />
-      </section>
+      {/* no special height here—MapView will size itself */}
+      <MapView />
     </>
   );
 } 

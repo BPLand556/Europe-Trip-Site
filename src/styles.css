@@ -5,23 +5,14 @@
   box-sizing: border-box;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   🔓 FORCE PAGE TO GROW & SCROLLABLE
-───────────────────────────────────────────────────────────────────────────── */
-html, body, #root, .App {
-  height: auto !important;        /* no more fixed‐height page */
-  max-height: none !important;
-  overflow: visible !important;   /* allow scrolling */
+html, body, #root {
+  height: auto !important;     /* page can grow */
+  overflow: visible !important; /* scrolling allowed */
   margin: 0;
   padding: 0;
 }
 
-/* clear out any hidden parent overflow */
-* {
-  overflow: visible !important;
-}
-
-/* optional: smooth on any anchor-scrolling */
+/* keep the smooth scroll behavior */
 html {
   scroll-behavior: smooth;
 }
@@ -42,12 +33,14 @@ body {
 
 /* Hero Section */
 .hero {
-  min-height: 100vh;              /* at least one full screen tall */
+  height: 100vh !important;    /* exactly one full screen tall */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
 }
 
 .hero-content {
@@ -75,10 +68,10 @@ body {
   bottom: 2rem;
   background: transparent;
   border: 2px solid white;
-  color: white;
   padding: 0.5rem 1rem;
   border-radius: 999px;
   cursor: pointer;
+  color: white;
 }
 
 .scroll-button { /* This class might be a remnant or alternative, but .scroll-btn is the active one */
