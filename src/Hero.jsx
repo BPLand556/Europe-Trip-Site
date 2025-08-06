@@ -8,9 +8,7 @@ export default function Hero() {
       <button
         className="scroll-btn"
         onClick={() =>
-          document
-            .getElementById("mapSection")
-            .scrollIntoView({ behavior: "smooth" })
+          window.scrollTo({ top: window.innerHeight, behavior: "smooth" })
         }
       >
         SCROLL ↓

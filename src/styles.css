@@ -5,12 +5,20 @@
   box-sizing: border-box;
 }
 
-/* allow the page to grow past one screen and scroll normally */
-html, body, #root {
-  height: auto !important;
-  overflow-y: auto !important;
+/* ─────────────────────────────────────────────────────────────────────────────
+   🔓 FORCE PAGE TO GROW & SCROLLABLE
+───────────────────────────────────────────────────────────────────────────── */
+html, body, #root, .App {
+  height: auto !important;        /* no more fixed‐height page */
+  max-height: none !important;
+  overflow: visible !important;   /* allow scrolling */
   margin: 0;
   padding: 0;
+}
+
+/* clear out any hidden parent overflow */
+* {
+  overflow: visible !important;
 }
 
 /* optional: smooth on any anchor-scrolling */
@@ -34,12 +42,12 @@ body {
 
 /* Hero Section */
 .hero {
-  position: relative;   /* not absolute */
-  height: 100vh;        /* exactly one viewport tall */
+  min-height: 100vh;              /* at least one full screen tall */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .hero-content {
