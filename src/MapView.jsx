@@ -62,7 +62,7 @@ export default function MapView() {
       <MapContainer
         center={[50, 10]}
         zoom={5}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "80vh" }}  // this gives the section height
         whenCreated={map => (mapRef.current = map)}
         zoomControl={false}
 
