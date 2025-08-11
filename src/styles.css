@@ -1,31 +1,27 @@
-/* Root can scroll; no fixed heights */
+/* Root can grow and scroll */
 html, body, #root, .page { margin: 0; padding: 0; height: auto; overflow-y: auto; }
 
-/* HERO: exactly one full screen; no margins that could collapse */
+/* Full-screen hero, no margins, no overflow */
 .hero {
-  /* use vh on desktop; browsers sometimes treat svh differently */
   height: 100vh;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   position: relative;
   background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: #fff; text-align: center;
-  margin: 0; padding: 0;            /* <- important */
+  margin: 0; padding: 0; overflow: hidden;
 }
+/* prevent heading/paragraph margins from creating extra space */
+.hero > * { margin: 0; }
 
-/* ensure the first/last child margins don't create a leftover sliver */
-.hero > * { margin-top: 0; }
+/* When hero is off-screen, collapse it so no sliver remains */
+.hero.collapsed { height: 0 !important; min-height: 0 !important; padding: 0 !important; border: 0 !important; }
 
-/* Smooth anchor scrolling in general */
-html { scroll-behavior: smooth; }
+/* Map sits flush under hero */
+#mapSection { margin: 0; padding: 0; }
 
+/* Keep your scroll button pinned inside the hero */
 .scroll-btn {
   position: absolute; bottom: 2rem;
   border: 2px solid #fff; background: transparent; color: #fff;
   padding: .5rem 1rem; border-radius: 999px; cursor: pointer;
-}
-
-/* MAP SECTION: no default margins that could leave purple showing */
-#mapSection { margin: 0; padding: 0; }
-
-/* Map container keeps its own height (e.g., 80vh inside MapView) */
-.map-wrapper { position: relative; width: 100%; } 
+} 

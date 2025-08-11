@@ -1,14 +1,27 @@
-import React from "react";
+import React, { useEffect } from "react";
 import MapView from "./MapView";
 import "./styles.css";
 
 export default function App() {
-  const goToMap = () => {
+  useEffect(() => {
     const hero = document.getElementById("hero");
-    if (!hero) return;
-    // scroll to the exact bottom of the hero, regardless of vh / svh quirks
-    const targetY = hero.offsetTop + hero.offsetHeight;
-    window.scrollTo({ top: targetY, behavior: "smooth" });
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        // when the hero is completely off-screen, collapse it to 0 height;
+        // when it comes back into view, restore it.
+        hero.classList.toggle("collapsed", entry.intersectionRatio === 0 && window.scrollY > 0);
+      },
+      { root: null, threshold: [0, 1] }
+    );
+    io.observe(hero);
+    return () => io.disconnect();
+  }, []);
+
+  const goToMap = () => {
+    const map = document.getElementById("mapSection");
+    if (!map) return;
+    const top = map.getBoundingClientRect().top + window.pageYOffset;
+    window.scrollTo({ top, behavior: "smooth" });
   };
 
   return (
