@@ -1,7 +1,7 @@
-/* Root can grow and scroll */
+/* page can grow & scroll */
 html, body, #root, .page { margin: 0; padding: 0; height: auto; overflow-y: auto; }
 
-/* Full-screen hero, no margins, no overflow */
+/* full-screen hero, no margins that could leave a strip */
 .hero {
   height: 100vh;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -10,16 +10,22 @@ html, body, #root, .page { margin: 0; padding: 0; height: auto; overflow-y: auto
   color: #fff; text-align: center;
   margin: 0; padding: 0; overflow: hidden;
 }
-/* prevent heading/paragraph margins from creating extra space */
 .hero > * { margin: 0; }
 
-/* When hero is off-screen, collapse it so no sliver remains */
-.hero.collapsed { height: 0 !important; min-height: 0 !important; padding: 0 !important; border: 0 !important; }
+/* when scrolled past, remove the hero from layout entirely */
+.hero.collapsed {
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+}
 
-/* Map sits flush under hero */
+/* map section must not add its own gap */
 #mapSection { margin: 0; padding: 0; }
 
-/* Keep your scroll button pinned inside the hero */
+/* scroll button styling */
 .scroll-btn {
   position: absolute; bottom: 2rem;
   border: 2px solid #fff; background: transparent; color: #fff;

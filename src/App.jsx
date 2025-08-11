@@ -5,16 +5,16 @@ import "./styles.css";
 export default function App() {
   useEffect(() => {
     const hero = document.getElementById("hero");
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        // when the hero is completely off-screen, collapse it to 0 height;
-        // when it comes back into view, restore it.
-        hero.classList.toggle("collapsed", entry.intersectionRatio === 0 && window.scrollY > 0);
-      },
-      { root: null, threshold: [0, 1] }
-    );
-    io.observe(hero);
-    return () => io.disconnect();
+
+    const onScroll = () => {
+      const pastHero = window.scrollY >= hero.offsetHeight - 1;
+      hero.classList.toggle("collapsed", pastHero);
+    };
+
+    // run once (in case you load mid-page) and then on scroll
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const goToMap = () => {
@@ -22,6 +22,10 @@ export default function App() {
     if (!map) return;
     const top = map.getBoundingClientRect().top + window.pageYOffset;
     window.scrollTo({ top, behavior: "smooth" });
+
+    // also collapse hero right after clicking (prevents any brief sliver)
+    const hero = document.getElementById("hero");
+    hero.classList.add("collapsed");
   };
 
   return (
