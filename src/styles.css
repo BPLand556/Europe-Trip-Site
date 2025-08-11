@@ -1,57 +1,35 @@
-/* ===== Reset root so the page can grow and scroll ===== */
-html, body, #root {
-  height: auto !important;
-  max-height: none !important;
-  overflow-y: auto !important;
+/* root must be allowed to grow; no fixed 100vh here */
+html, body, #root, .page {
+  height: auto;
   margin: 0;
   padding: 0;
+  overflow-y: auto;
 }
 
-/* If you have an .App or main wrapper that previously used 100vh/overflow:hidden, override it */
-.page, .App, main {
-  height: auto !important;
-  overflow: visible !important;
-  display: block;
-}
-
-/* ===== Hero: exactly one viewport tall ===== */
+/* Full-screen hero */
 .hero {
-  height: 100svh; /* use small-viewport unit to avoid iOS bars issues */
+  height: 100svh;              /* reliable on mobile too */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: #fff;
   text-align: center;
+  color: #fff;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  position: relative;
 }
 
-/* Nice smooth scrolling for anchor jumps */
+/* Smooth anchor scroll */
 html { scroll-behavior: smooth; }
 
-/* Scroll button at bottom of hero */
+/* Scroll button */
 .scroll-btn {
   position: absolute;
   bottom: 2rem;
   border: 2px solid #fff;
   background: transparent;
   color: #fff;
-  padding: 0.5rem 1rem;
+  padding: .5rem 1rem;
   border-radius: 999px;
   cursor: pointer;
-}
-
-/* ===== Map section sits directly below hero ===== */
-.map-section {
-  position: relative;
-  width: 100%;
-  /* no fixed height here; MapView controls its own height */
-}
-
-/* Ensure the map contributes height normally */
-.map-wrapper { position: relative; width: 100%; }
-.leaflet-container { pointer-events: auto; }
-
-/* Guardrails: nothing on the page should hide overflow anymore */
-* { overscroll-behavior: auto; } 
+} 

@@ -5,31 +5,30 @@ import {
   Marker,
   Popup,
   Polyline,
-  Rectangle,
-  ZoomControl,
+  ZoomControl
 } from "react-leaflet";
 import L from "leaflet";
-import { destinations } from "./data.js";
+import stops from "./data";
+import "./MapView.css";
 
-// Fix default Leaflet icon paths
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+  iconUrl:      require("leaflet/dist/images/marker-icon.png"),
+  shadowUrl:    require("leaflet/dist/images/marker-shadow.png"),
 });
 
 export default function MapView() {
-  const mapRef = useRef();
+  const mapRef = useRef(null);
   const [openIdx, setOpenIdx] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const trail = destinations.map(d => d.coords);
+  const trail = stops.map(s => s.coords);
 
-  // approximate Europe bounds [northWest, southEast]
+  // Europe limits: [NW, SE]
   const europeBounds = [
-    [71.0, -25.0],   // NW corner
-    [34.0,  40.0],   // SE corner
+    [71.0, -25.0],
+    [34.0,  40.0],
   ];
 
   const flyToStop = (coords, i) => {
@@ -44,16 +43,18 @@ export default function MapView() {
       <button
         className="hamburger"
         onClick={() => setMenuOpen(o => !o)}
+        aria-label="Toggle menu"
       >
         ☰
       </button>
 
-      <aside className={`sidebar ${menuOpen ? "open" : ""}`}>
+      {/* Sidebar overlays the map (does NOT push layout) */}
+      <aside className={`sidebar ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
         <ul>
-          {destinations.map((d, i) => (
-            <li key={i} onClick={() => flyToStop(d.coords, i)}>
-              <img src={d.img} alt={d.name} />
-              <span>{d.name}</span>
+          {stops.map((s,i) => (
+            <li key={i} onClick={() => flyToStop(s.coords, i)}>
+              <img src={s.img} alt={s.name} />
+              <span>{s.name}</span>
             </li>
           ))}
         </ul>
@@ -62,50 +63,39 @@ export default function MapView() {
       <MapContainer
         center={[50, 10]}
         zoom={5}
-        style={{ width: "100%", height: "80vh" }}  // this gives the section height
-        whenCreated={map => (mapRef.current = map)}
-        zoomControl={false}
-
-        /* LOCK OUT too-far-out zoom & pan */
-        minZoom={4}
-        maxBounds={europeBounds}
+        minZoom={4}                     // don't zoom out past "all of Europe"
+        maxZoom={11}
+        maxBounds={europeBounds}        // don't pan outside Europe
         maxBoundsViscosity={1.0}
-
-        /* ensure all interactions are on */
-        dragging={true}
-        touchZoom={true}
-        scrollWheelZoom={true}
-        doubleClickZoom={true}
-        boxZoom={true}
-        keyboard={true}
+        style={{ width: "100%", height: "80vh" }}
+        whenCreated={m => (mapRef.current = m)}
+        zoomControl={false}
+        dragging
+        scrollWheelZoom
+        touchZoom
+        doubleClickZoom
+        boxZoom
+        keyboard
+        tap
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; CARTO &copy; OpenStreetMap'
         />
         <ZoomControl position="bottomright" />
+
         <Polyline positions={trail} color="#1978c8" weight={4} />
 
-        {/* dashed border showing the map limit */}
-        <Rectangle
-          bounds={europeBounds}
-          pathOptions={{ color: "#1978c8", weight: 2, dashArray: "6,6" }}
-        />
-
-        {destinations.map((d, i) => (
+        {stops.map((s, i) => (
           <Marker
             key={i}
-            position={d.coords}
+            position={s.coords}
             eventHandlers={{ click: () => setOpenIdx(i) }}
           >
             {openIdx === i && (
               <Popup onClose={() => setOpenIdx(null)}>
-                <h3>{d.name}</h3>
-                <img
-                  src={d.img}
-                  alt={d.name}
-                  style={{ width: "100%", borderRadius: "4px" }}
-                />
+                <h3>{s.name}</h3>
+                <img src={s.img} alt={s.name} style={{ width: "100%", borderRadius: 4 }} />
               </Popup>
             )}
           </Marker>
