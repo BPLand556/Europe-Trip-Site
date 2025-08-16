@@ -1,7 +1,7 @@
 .map-wrapper {
   position: relative;
   width: 100%;
-  height: 100%;   /* ← important */
+  height: 100%;          /* ← important: lets the map take 100% */
 }
 
 /* Make sure the map can receive pointer events */

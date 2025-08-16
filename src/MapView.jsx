@@ -65,19 +65,19 @@ export default function MapView() {
         zoom={5}
         minZoom={4}
         maxZoom={11}
-        maxBounds={[[71.0, -25.0],[34.0, 40.0]]}
+        maxBounds={[[71.0, -25.0], [34.0, 40.0]]}
         maxBoundsViscosity={1.0}
-        whenCreated={(map) => {
-          mapRef.current = map;
-          // pane for labels (above base tiles; ignore pointer events)
-          if (!map.getPane('labels')) {
-            map.createPane('labels');
-            const p = map.getPane('labels');
+        whenCreated={(m) => {
+          mapRef.current = m;
+          // a pane for labels so they sit above tiles but don't block clicks
+          if (!m.getPane("labels")) {
+            m.createPane("labels");
+            const p = m.getPane("labels");
             p.style.zIndex = 650;
-            p.style.pointerEvents = 'none';
+            p.style.pointerEvents = "none";
           }
         }}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100%" }}   // ← 100% of wrapper
         zoomControl={false}
         dragging
         scrollWheelZoom
@@ -87,19 +87,21 @@ export default function MapView() {
         keyboard
         tap
       >
-        {/* Base (gray, English basemap) */}
+        {/* CARTO: base with NO labels */}
         <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
-          attribution="Tiles &copy; Esri &mdash; Esri, HERE, Garmin, FAO, NOAA, USGS"
+          url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+          attribution="&copy; CARTO &copy; OpenStreetMap contributors"
         />
-        {/* English reference labels overlay */}
+        {/* CARTO: labels-only overlay (English) */}
         <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
-          attribution="Labels &copy; Esri"
+          url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
+          attribution="&copy; CARTO"
           pane="labels"
         />
 
         <ZoomControl position="bottomright" />
+
+        {/* your polyline + markers/popups go here unchanged */}
         <Polyline positions={trail} color="#1978c8" weight={4} />
         {stops.map((s, i) => (
           <Marker key={i} position={s.coords} eventHandlers={{ click: () => setOpenIdx(i) }}>

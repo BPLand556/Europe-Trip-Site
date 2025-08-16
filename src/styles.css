@@ -1,9 +1,9 @@
-/* Full-screen, no scroll page */
+/* Fill the viewport exactly; no scroll & no gaps */
 html, body, #root, .page {
   margin: 0;
   padding: 0;
-  height: 100dvh;      /* dynamic viewport height = no gaps */
-  overflow: hidden;    /* no page scroll, the map fills the screen */
+  height: 100%;          /* ← percentage chain all the way down */
+  overflow: hidden;      /* map is the whole app */
 }
 
 /* keep whatever you already had for buttons/sidebar, etc. */ 
