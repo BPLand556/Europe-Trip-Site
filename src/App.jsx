@@ -7,16 +7,30 @@ export default function App() {
     const root = document.documentElement;
     const hero = document.getElementById("hero");
 
-    const onScroll = () => {
+    let ticking = false;
+    const update = () => {
+      ticking = false;
       if (!hero) return;
-      const pastHero = window.scrollY >= hero.offsetHeight - 1;
-      if (pastHero) root.classList.add("hero-hidden");
-      else if (window.scrollY <= 1) root.classList.remove("hero-hidden");
+      // If the hero's bottom is at or above the top of the viewport, hide it.
+      const bottom = hero.getBoundingClientRect().bottom;
+      if (bottom <= 0) root.classList.add("hero-hidden");
+      else root.classList.remove("hero-hidden");
     };
 
-    onScroll(); // run once on load
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const onScrollOrResize = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+
+    update(); // run once on load
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+    };
   }, []);
 
   const goToMap = () => {
@@ -24,10 +38,10 @@ export default function App() {
     const map = document.getElementById("mapSection");
     if (!map) return;
 
-    // Remove the hero from layout first so there is zero leftover height.
+    // Hide hero first so there are truly zero leftover pixels.
     root.classList.add("hero-hidden");
 
-    // Next frame (after layout updates), scroll to the exact top of the map.
+    // Then scroll to the exact top of the map.
     requestAnimationFrame(() => {
       const top = map.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({ top, behavior: "smooth" });
