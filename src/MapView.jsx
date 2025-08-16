@@ -63,12 +63,21 @@ export default function MapView() {
       <MapContainer
         center={[50, 10]}
         zoom={5}
-        minZoom={4}                     // don't zoom out past "all of Europe"
+        minZoom={4}
         maxZoom={11}
-        maxBounds={europeBounds}        // don't pan outside Europe
+        maxBounds={[[71.0, -25.0],[34.0, 40.0]]}
         maxBoundsViscosity={1.0}
-        style={{ width: "100%", height: "80vh" }}
-        whenCreated={m => (mapRef.current = m)}
+        whenCreated={(map) => {
+          mapRef.current = map;
+          // pane for labels (above base tiles; ignore pointer events)
+          if (!map.getPane('labels')) {
+            map.createPane('labels');
+            const p = map.getPane('labels');
+            p.style.zIndex = 650;
+            p.style.pointerEvents = 'none';
+          }
+        }}
+        style={{ width: "100%", height: "100%" }}
         zoomControl={false}
         dragging
         scrollWheelZoom
@@ -78,24 +87,26 @@ export default function MapView() {
         keyboard
         tap
       >
+        {/* Base (gray, English basemap) */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-          attribution='&copy; CARTO &copy; OpenStreetMap'
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+          attribution="Tiles &copy; Esri &mdash; Esri, HERE, Garmin, FAO, NOAA, USGS"
         />
+        {/* English reference labels overlay */}
+        <TileLayer
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
+          attribution="Labels &copy; Esri"
+          pane="labels"
+        />
+
         <ZoomControl position="bottomright" />
-
         <Polyline positions={trail} color="#1978c8" weight={4} />
-
         {stops.map((s, i) => (
-          <Marker
-            key={i}
-            position={s.coords}
-            eventHandlers={{ click: () => setOpenIdx(i) }}
-          >
+          <Marker key={i} position={s.coords} eventHandlers={{ click: () => setOpenIdx(i) }}>
             {openIdx === i && (
               <Popup onClose={() => setOpenIdx(null)}>
-                <h3>{s.name}</h3>
-                <img src={s.img} alt={s.name} style={{ width: "100%", borderRadius: 4 }} />
+                <h3 style={{ marginTop: 0 }}>{s.name}</h3>
+                <img src={s.img} alt={s.name} style={{ width: "100%", borderRadius: 6 }} />
               </Popup>
             )}
           </Marker>

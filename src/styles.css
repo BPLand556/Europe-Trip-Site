@@ -1,9 +1,9 @@
-/* Basic reset so there's no stray gap anywhere */
+/* Full-screen, no scroll page */
 html, body, #root, .page {
   margin: 0;
   padding: 0;
-  height: auto;
-  overflow-y: auto;
+  height: 100dvh;      /* dynamic viewport height = no gaps */
+  overflow: hidden;    /* no page scroll, the map fills the screen */
 }
 
-/* (Optional) if you had any old hero/overlay rules, DELETE them. */ 
+/* keep whatever you already had for buttons/sidebar, etc. */ 
