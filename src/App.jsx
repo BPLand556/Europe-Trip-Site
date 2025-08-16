@@ -4,28 +4,34 @@ import "./styles.css";
 
 export default function App() {
   useEffect(() => {
+    const root = document.documentElement;
     const hero = document.getElementById("hero");
 
     const onScroll = () => {
+      if (!hero) return;
       const pastHero = window.scrollY >= hero.offsetHeight - 1;
-      hero.classList.toggle("collapsed", pastHero);
+      if (pastHero) root.classList.add("hero-hidden");
+      else if (window.scrollY <= 1) root.classList.remove("hero-hidden");
     };
 
-    // run once (in case you load mid-page) and then on scroll
-    onScroll();
+    onScroll(); // run once on load
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const goToMap = () => {
+    const root = document.documentElement;
     const map = document.getElementById("mapSection");
     if (!map) return;
-    const top = map.getBoundingClientRect().top + window.pageYOffset;
-    window.scrollTo({ top, behavior: "smooth" });
 
-    // also collapse hero right after clicking (prevents any brief sliver)
-    const hero = document.getElementById("hero");
-    hero.classList.add("collapsed");
+    // Remove the hero from layout first so there is zero leftover height.
+    root.classList.add("hero-hidden");
+
+    // Next frame (after layout updates), scroll to the exact top of the map.
+    requestAnimationFrame(() => {
+      const top = map.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({ top, behavior: "smooth" });
+    });
   };
 
   return (

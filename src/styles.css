@@ -1,31 +1,26 @@
-/* page can grow & scroll */
+/* Page can grow & scroll */
 html, body, #root, .page { margin: 0; padding: 0; height: auto; overflow-y: auto; }
 
-/* full-screen hero, no margins that could leave a strip */
+/* Full-screen hero; NO margins that could leave a strip */
 .hero {
   height: 100vh;
   display: flex; flex-direction: column; justify-content: center; align-items: center;
   position: relative;
   background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: #fff; text-align: center;
-  margin: 0; padding: 0; overflow: hidden;
+  margin: 0; padding: 0; border: 0; overflow: hidden;
 }
-.hero > * { margin: 0; }
+.hero > * { margin: 0; }           /* kill default h1/p top margins */
 
-/* when scrolled past, remove the hero from layout entirely */
-.hero.collapsed {
-  height: 0 !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: 0 !important;
-  overflow: hidden !important;
+/* When we add .hero-hidden on <html>, the hero is OUT of the layout (zero pixels) */
+:root.hero-hidden #hero {
+  display: none !important;
 }
 
-/* map section must not add its own gap */
-#mapSection { margin: 0; padding: 0; }
+/* Map sits flush under the hero */
+#mapSection { margin: 0 !important; padding: 0 !important; }
 
-/* scroll button styling */
+/* Button styling (unchanged) */
 .scroll-btn {
   position: absolute; bottom: 2rem;
   border: 2px solid #fff; background: transparent; color: #fff;
