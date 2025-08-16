@@ -1,39 +1,24 @@
-/* The root scroller should snap on the Y axis */
-html {
-  scroll-snap-type: y mandatory;   /* or 'proximity' if you prefer a softer snap */
-  scroll-behavior: smooth;         /* keeps things polished */
-}
+/* Page can grow & scroll */
+html, body, #root, .page { margin: 0; padding: 0; height: auto; overflow-y: auto; }
 
-/* Each full-screen section snaps to the top edge */
-.hero,
-#mapSection {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;        /* ensures it completes the snap on touch/wheel */
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-/* Keep the hero exactly one viewport tall, no extra spacing */
+/* Full-screen hero with no margins that could leave a strip */
 .hero {
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  position: relative;
   background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: #fff;
-  overflow: hidden;
+  color: #fff; text-align: center;
+  margin: 0; padding: 0; border: 0; overflow: hidden;
 }
-.hero > * { margin: 0; }           /* no default h1/p top margins */
+.hero > * { margin: 0; }  /* kill default h1/p margins */
 
-/* When past the hero, remove it from layout entirely */
+/* When the root gets .hero-hidden, remove the hero from layout entirely */
 :root.hero-hidden #hero { display: none !important; }
 
-/* Map section flush below */
+/* Map section must not add its own gap */
 #mapSection { margin: 0 !important; padding: 0 !important; }
 
-/* Button styling (unchanged) */
+/* (optional) button styling */
 .scroll-btn {
   position: absolute; bottom: 2rem;
   border: 2px solid #fff; background: transparent; color: #fff;

@@ -7,24 +7,25 @@ export default function App() {
     const root = document.documentElement;
     const hero = document.getElementById("hero");
 
-    let ticking = false;
-    const update = () => {
-      ticking = false;
-      if (!hero) return;
-      // If the hero's bottom is at or above the top of the viewport, hide it.
-      const bottom = hero.getBoundingClientRect().bottom;
-      if (bottom <= 0) root.classList.add("hero-hidden");
-      else root.classList.remove("hero-hidden");
-    };
+    // Hide hero as soon as its bottom is within THRESHOLD px of the viewport top.
+    // This prevents the map from "stealing" the last bit of scroll.
+    const THRESHOLD = 120; // px – tweak if you like
 
     const onScrollOrResize = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(update);
+      if (!hero) return;
+      const bottom = hero.getBoundingClientRect().bottom;
+
+      // If we're basically at the very top, show hero again.
+      if (window.scrollY <= 1) {
+        root.classList.remove("hero-hidden");
+        return;
       }
+
+      // Hide hero a tad early so no purple sliver can remain.
+      if (bottom <= THRESHOLD) root.classList.add("hero-hidden");
     };
 
-    update(); // run once on load
+    onScrollOrResize(); // run once on load
     window.addEventListener("scroll", onScrollOrResize, { passive: true });
     window.addEventListener("resize", onScrollOrResize);
     return () => {
@@ -38,10 +39,10 @@ export default function App() {
     const map = document.getElementById("mapSection");
     if (!map) return;
 
-    // Hide hero first so there are truly zero leftover pixels.
+    // Remove hero first so there are zero leftover pixels
     root.classList.add("hero-hidden");
 
-    // Then scroll to the exact top of the map.
+    // Then scroll to exact top of map
     requestAnimationFrame(() => {
       const top = map.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({ top, behavior: "smooth" });
