@@ -1,5 +1,8 @@
-/* Page can grow & scroll */
+/* Allow page to grow & scroll */
 html, body, #root, .page { margin: 0; padding: 0; height: auto; overflow-y: auto; }
+
+/* If you added scroll-snap before, disable it (it can fight the script) */
+html { scroll-snap-type: none !important; }
 
 /* Full-screen hero with no margins that could leave a strip */
 .hero {
@@ -10,15 +13,15 @@ html, body, #root, .page { margin: 0; padding: 0; height: auto; overflow-y: auto
   color: #fff; text-align: center;
   margin: 0; padding: 0; border: 0; overflow: hidden;
 }
-.hero > * { margin: 0; }  /* kill default h1/p margins */
+.hero > * { margin: 0; } /* kill default h1/p margins */
 
-/* When the root gets .hero-hidden, remove the hero from layout entirely */
+/* When root gets .hero-hidden, hero is OUT of the layout (zero px) */
 :root.hero-hidden #hero { display: none !important; }
 
-/* Map section must not add its own gap */
+/* Map must start flush at the top */
 #mapSection { margin: 0 !important; padding: 0 !important; }
 
-/* (optional) button styling */
+/* Button styling (unchanged) */
 .scroll-btn {
   position: absolute; bottom: 2rem;
   border: 2px solid #fff; background: transparent; color: #fff;

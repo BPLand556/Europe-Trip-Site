@@ -6,23 +6,28 @@ export default function App() {
   useEffect(() => {
     const root = document.documentElement;
     const hero = document.getElementById("hero");
+    const map = document.getElementById("mapSection");
 
-    // Hide hero as soon as its bottom is within THRESHOLD px of the viewport top.
-    // This prevents the map from "stealing" the last bit of scroll.
-    const THRESHOLD = 120; // px – tweak if you like
+    // Hide hero a bit early so Leaflet can't trap the last scroll pixels.
+    const THRESHOLD = 100; // px (adjust 60–140 if you want earlier/later)
 
     const onScrollOrResize = () => {
-      if (!hero) return;
-      const bottom = hero.getBoundingClientRect().bottom;
+      if (!hero || !map) return;
 
-      // If we're basically at the very top, show hero again.
+      const mapTop = map.getBoundingClientRect().top;
+
+      // If user is basically at the very top, show hero again.
       if (window.scrollY <= 1) {
         root.classList.remove("hero-hidden");
         return;
       }
 
-      // Hide hero a tad early so no purple sliver can remain.
-      if (bottom <= THRESHOLD) root.classList.add("hero-hidden");
+      // Hide hero as soon as the map is within THRESHOLD px of the top.
+      if (mapTop <= THRESHOLD) {
+        root.classList.add("hero-hidden");
+      } else {
+        root.classList.remove("hero-hidden");
+      }
     };
 
     onScrollOrResize(); // run once on load
@@ -38,11 +43,7 @@ export default function App() {
     const root = document.documentElement;
     const map = document.getElementById("mapSection");
     if (!map) return;
-
-    // Remove hero first so there are zero leftover pixels
-    root.classList.add("hero-hidden");
-
-    // Then scroll to exact top of map
+    root.classList.add("hero-hidden"); // remove hero first → zero leftover pixels
     requestAnimationFrame(() => {
       const top = map.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({ top, behavior: "smooth" });
