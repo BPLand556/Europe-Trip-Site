@@ -1,29 +1,42 @@
-/* Allow page to grow & scroll */
-html, body, #root, .page { margin: 0; padding: 0; height: auto; overflow-y: auto; }
-
-/* If you added scroll-snap before, disable it (it can fight the script) */
-html { scroll-snap-type: none !important; }
-
-/* Full-screen hero with no margins that could leave a strip */
-.hero {
-  height: 100vh;
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  position: relative;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: #fff; text-align: center;
-  margin: 0; padding: 0; border: 0; overflow: hidden;
+/* Root can grow + scroll normally */
+html, body, #root, .page {
+  margin: 0; padding: 0; height: auto; overflow-y: auto;
 }
-.hero > * { margin: 0; } /* kill default h1/p margins */
 
-/* When root gets .hero-hidden, hero is OUT of the layout (zero px) */
-:root.hero-hidden #hero { display: none !important; }
+/* ===== Overlay hero (fixed, not part of layout) ===== */
+.hero-overlay {
+  position: fixed;
+  inset: 0;                          /* full viewport */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: #fff;
+  z-index: 1000;
 
-/* Map must start flush at the top */
-#mapSection { margin: 0 !important; padding: 0 !important; }
-
-/* Button styling (unchanged) */
+  /* transition driven by --p (0..1) set from JS */
+  /* fade out & slide up slightly as you scroll */
+  opacity: calc(1 - var(--p, 0));
+  transform: translateY(calc(-12vh * var(--p, 0)));
+  will-change: opacity, transform;
+}
+.hero-overlay.hidden { display: none; } /* once past: zero pixels, no sliver */
+.hero-overlay > * { margin: 0; }
 .scroll-btn {
   position: absolute; bottom: 2rem;
   border: 2px solid #fff; background: transparent; color: #fff;
   padding: .5rem 1rem; border-radius: 999px; cursor: pointer;
-} 
+}
+
+/* Spacer provides exactly one viewport of scroll distance */
+.hero-spacer { height: 100vh; }
+
+/* Map section sits flush at the top once the hero is gone */
+#mapSection { margin: 0; padding: 0; }
+
+/* If you previously added any of these, REMOVE them:
+   - .hero, :root.hero-hidden #hero, scroll-snap rules
+   - any height:100vh or overflow:hidden on .App/main/html/body
+*/ 
