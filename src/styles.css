@@ -1,42 +1,35 @@
-/* Root can grow + scroll normally */
-html, body, #root, .page {
-  margin: 0; padding: 0; height: auto; overflow-y: auto;
-}
+/* Root can grow & scroll */
+html, body, #root, .page { margin: 0; padding: 0; height: auto; overflow-y: auto; }
 
-/* ===== Overlay hero (fixed, not part of layout) ===== */
-.hero-overlay {
-  position: fixed;
-  inset: 0;                          /* full viewport */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+/* Full-screen hero with no stray margins */
+.hero {
+  height: 100vh;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
   background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: #fff;
-  z-index: 1000;
-
-  /* transition driven by --p (0..1) set from JS */
-  /* fade out & slide up slightly as you scroll */
-  opacity: calc(1 - var(--p, 0));
-  transform: translateY(calc(-12vh * var(--p, 0)));
-  will-change: opacity, transform;
+  color: #fff; text-align: center;
+  margin: 0; padding: 0; border: 0; overflow: hidden;
 }
-.hero-overlay.hidden { display: none; } /* once past: zero pixels, no sliver */
-.hero-overlay > * { margin: 0; }
+.hero > * { margin: 0; }
+
 .scroll-btn {
   position: absolute; bottom: 2rem;
   border: 2px solid #fff; background: transparent; color: #fff;
   padding: .5rem 1rem; border-radius: 999px; cursor: pointer;
 }
 
-/* Spacer provides exactly one viewport of scroll distance */
-.hero-spacer { height: 100vh; }
-
-/* Map section sits flush at the top once the hero is gone */
+/* Map section starts directly under the hero */
 #mapSection { margin: 0; padding: 0; }
 
-/* If you previously added any of these, REMOVE them:
-   - .hero, :root.hero-hidden #hero, scroll-snap rules
-   - any height:100vh or overflow:hidden on .App/main/html/body
-*/ 
+/* Veil: sits above the map ONLY while hero is visible.
+   It allows page scroll (pan-y) and blocks map from capturing wheel/touch. */
+.map-veil {
+  position: fixed;
+  inset: 0;
+  background: transparent;          /* invisible */
+  pointer-events: auto;             /* capture events so they don't hit the map */
+  touch-action: pan-y;              /* allow vertical page scrolling on touch */
+  z-index: 900;                     /* above map, below your navbar if any */
+}
+
+/* Map wrapper can be whatever you had; ensure it contributes height */
+.map-wrapper { position: relative; width: 100%; } 

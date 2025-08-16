@@ -1,54 +1,43 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MapView from "./MapView";
 import "./styles.css";
 
 export default function App() {
-  const overlayRef = useRef(null);
+  const heroRef = useRef(null);
+  const [veilOn, setVeilOn] = useState(true);
 
   useEffect(() => {
-    let vh = window.innerHeight;
-
-    const update = () => {
-      // progress from 0 → 1 as you scroll one viewport height
-      const p = Math.max(0, Math.min(1, window.scrollY / vh));
-      if (overlayRef.current) {
-        overlayRef.current.style.setProperty("--p", String(p));
-        // once fully past, remove from rendering so 0 pixels remain
-        if (p >= 1) overlayRef.current.classList.add("hidden");
-        else overlayRef.current.classList.remove("hidden");
-      }
+    const onScrollOrResize = () => {
+      const hero = heroRef.current;
+      if (!hero) return;
+      // If any part of the hero is still visible, keep the veil ON
+      const bottom = hero.getBoundingClientRect().bottom;
+      setVeilOn(bottom > 0);
     };
-
-    const onResize = () => { vh = window.innerHeight; update(); };
-
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", onResize);
+    onScrollOrResize();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
     return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
     };
   }, []);
 
-  const goToMap = () => {
-    // jump exactly one viewport down (same height as the spacer)
+  const goToMap = () =>
     window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
-  };
 
   return (
     <main className="page">
-      {/* FIXED overlay (not in layout) */}
-      <div ref={overlayRef} className="hero-overlay">
+      {/* 100vh hero in normal flow */}
+      <section id="hero" ref={heroRef} className="hero">
         <h1>The Adventures of Billy and Bobby</h1>
         <p>A European Journey</p>
         <button className="scroll-btn" onClick={goToMap}>SCROLL ↓</button>
-      </div>
+      </section>
 
-      {/* Spacer that provides the scroll distance of the hero */}
-      <div className="hero-spacer" aria-hidden="true" />
-
-      {/* Real content starts immediately with the map at the top */}
+      {/* Map section. The veil is a fixed overlay toggled by hero visibility */}
       <section id="mapSection" className="map-section">
+        {veilOn && <div className="map-veil" aria-hidden="true" />}
         <MapView />
       </section>
     </main>
