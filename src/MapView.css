@@ -1,12 +1,9 @@
-.map-wrapper {
-  position: relative;          /* anchor for absolutely positioned sidebar */
-  width: 100%;
-}
+.map-wrapper { position: relative; width: 100%; }
 
-/* Map must receive pointer events and occupy height provided inline (80vh) */
+/* Make sure the map can receive pointer events */
 .leaflet-container { pointer-events: auto; }
 
-/* Hamburger */
+/* Hamburger button */
 .hamburger {
   position: absolute;
   top: 1rem;
@@ -15,17 +12,17 @@
   background: #fff;
   border: none;
   font-size: 1.3rem;
-  padding: 0.4rem 0.6rem;
+  padding: 0.45rem 0.6rem;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(0,0,0,.2);
   cursor: pointer;
 }
 
-/* Sidebar overlays the map (no layout shift) */
+/* Overlay sidebar (no layout shift) */
 .sidebar {
   position: absolute;
   top: 0;
-  left: -280px;                /* hidden by default */
+  left: -280px;              /* hidden by default */
   width: 260px;
   height: 100%;
   background: rgba(255,255,255,.97);
@@ -35,10 +32,11 @@
   z-index: 999;
 }
 .sidebar.open { left: 0; }
-.sidebar ul { list-style: none !important; margin: 0; padding: 0; }
+
+.sidebar ul { list-style: none; margin: 0; padding: 0; }
 .sidebar li {
   display: flex; align-items: center;
   gap: .6rem; margin-bottom: .9rem; cursor: pointer;
 }
 .sidebar img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; }
-.sidebar span { font-size: 0.95rem; }
+.sidebar span { font-size: .95rem; }

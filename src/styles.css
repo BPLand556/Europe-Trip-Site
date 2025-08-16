@@ -1,35 +1,9 @@
-/* Root can grow & scroll */
-html, body, #root, .page { margin: 0; padding: 0; height: auto; overflow-y: auto; }
-
-/* Full-screen hero with no stray margins */
-.hero {
-  height: 100vh;
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: #fff; text-align: center;
-  margin: 0; padding: 0; border: 0; overflow: hidden;
-}
-.hero > * { margin: 0; }
-
-.scroll-btn {
-  position: absolute; bottom: 2rem;
-  border: 2px solid #fff; background: transparent; color: #fff;
-  padding: .5rem 1rem; border-radius: 999px; cursor: pointer;
+/* Basic reset so there's no stray gap anywhere */
+html, body, #root, .page {
+  margin: 0;
+  padding: 0;
+  height: auto;
+  overflow-y: auto;
 }
 
-/* Map section starts directly under the hero */
-#mapSection { margin: 0; padding: 0; }
-
-/* Veil: sits above the map ONLY while hero is visible.
-   It allows page scroll (pan-y) and blocks map from capturing wheel/touch. */
-.map-veil {
-  position: fixed;
-  inset: 0;
-  background: transparent;          /* invisible */
-  pointer-events: auto;             /* capture events so they don't hit the map */
-  touch-action: pan-y;              /* allow vertical page scrolling on touch */
-  z-index: 900;                     /* above map, below your navbar if any */
-}
-
-/* Map wrapper can be whatever you had; ensure it contributes height */
-.map-wrapper { position: relative; width: 100%; } 
+/* (Optional) if you had any old hero/overlay rules, DELETE them. */ 
